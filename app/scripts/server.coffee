@@ -2,19 +2,22 @@
 {World} = require './world'
 
 exports.run = ->
+  port = 3001
   screens = {}
   lastScreen = 0
   world = new World
     limits:
       width: 1200, height: 800
 
-  wss = new Server(port: 3001)
+  wss = new Server(port: port)
+  console.log "Started websocket server on port #{port}."
+
   wss.on 'connection', (ws) ->
 
     if ws.protocol is 'screen'
       screenId = lastScreen
       lastScreen += 1
-      console.log "  [*] Screen #{screenId} connected"
+      console.log "  [*] Screen #{screenId} connected."
 
       update = ->
         data = world.serialize()
@@ -25,11 +28,11 @@ exports.run = ->
       ws.on 'close', ->
         clearInterval screens[screenId]
         delete screens[screenId]
-        console.log "  [*] Screen #{screenId} disconnected"
+        console.log "  [*] Screen #{screenId} disconnected."
 
     else if ws.protocol is 'controller'
       clientId = world.addPlayer()
-      console.log "  [*] Controller #{clientId} connected"
+      console.log "  [*] Controller #{clientId} connected."
 
       ws.on 'message', (message) ->
         data = JSON.parse(message)
@@ -37,4 +40,4 @@ exports.run = ->
 
       ws.on 'close', ->
         world.removePlayer(clientId)
-        console.log "  [*] Client #{clientId} disconnected"
+        console.log "  [*] Client #{clientId} disconnected."
