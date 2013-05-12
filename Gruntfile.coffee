@@ -60,6 +60,7 @@ module.exports = (grunt) ->
               mountFolder(connect, '.tmp'),
               mountFolder(connect, 'public')
             ]
+
   grunt.registerTask 'websocket-server', (target) ->
     require('./app/scripts/server').run()
 
