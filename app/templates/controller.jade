@@ -1,0 +1,14 @@
+!!! 5
+html(lang='en')
+  head
+    title Canvas experiment
+    link(rel='stylesheet', href='stylesheets/style.css')
+    script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js')
+    script(src='scripts/requirejs.js', data-main='scripts/controller')
+  body
+    .message
+    .control.up(action='up') UP
+    .control.right(action='right') RIGHT
+    .control.left(action='left') LEFT
+    .control.down(action='down') DOWN
+    .control.fire(action='fire') FIRE

@@ -10,14 +10,24 @@ module.exports = (grunt) ->
         files: 'app/templates/*.jade'
         tasks: ['jade']
       coffee:
-        files: ['app/scripts/client/*']
+        files: 'app/scripts/client/*.coffee'
         tasks: ['coffee']
+      stylus:
+        files: 'app/stylesheets/*.styl'
+        tasks: ['stylus']
+
     jade:
       compile:
         options:
           pretty: true
-        files:
-          '.tmp/index.html': ['app/templates/index.jade']
+        files: [{
+          expand: true
+          cwd: 'app/templates'
+          src: '*.jade'
+          dest: '.tmp'
+          ext: '.html'
+        }]
+
     coffee:
       compile:
         files: [{
@@ -27,10 +37,22 @@ module.exports = (grunt) ->
           dest: '.tmp/scripts'
           ext: '.js'
         }]
+
+    stylus:
+      compile:
+        files: [{
+          expand: true
+          cwd: 'app/stylesheets'
+          src: '*.styl'
+          dest: '.tmp/stylesheets'
+          ext: '.css'
+        }]
+
+
     connect:
       options:
         port: 3000
-        hostname: 'localhost'
+        hostname: '0.0.0.0'
       dev:
         options:
           middleware: (connect) ->
@@ -43,6 +65,7 @@ module.exports = (grunt) ->
     grunt.task.run [
       'jade',
       'coffee',
+      'stylus',
       'connect:dev',
       'regarde'
     ]
