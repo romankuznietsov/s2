@@ -1,11 +1,12 @@
 {
   "name": "s2",
-  "version": "0.0.0",
-  "repository": "",
+  "version": "0.0.1",
   "author": "Roman Kuznietsov",
   "license": "BSD",
   "devDependencies": {
     "matchdep": "~0.1.2",
+    "ws": "~0.4.25",
+    "chai": "~1.6.0",
     "grunt": "~0.4.1",
     "grunt-regarde": "~0.1.1",
     "grunt-contrib-jade": "~0.5.1",

@@ -60,6 +60,8 @@ module.exports = (grunt) ->
               mountFolder(connect, '.tmp'),
               mountFolder(connect, 'public')
             ]
+  grunt.registerTask 'websocket-server', (target) ->
+    require('./app/scripts/server').run()
 
   grunt.registerTask 'server', (target) ->
     grunt.task.run [
@@ -67,5 +69,6 @@ module.exports = (grunt) ->
       'coffee',
       'stylus',
       'connect:dev',
+      'websocket-server',
       'regarde'
     ]
