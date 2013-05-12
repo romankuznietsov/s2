@@ -62,7 +62,8 @@ module.exports = (grunt) ->
             ]
 
   grunt.registerTask 'websocket-server', (target) ->
-    require('./app/scripts/server').run()
+    {Server} = require './app/scripts/server'
+    server = new Server(3001)
 
   grunt.registerTask 'server', (target) ->
     grunt.task.run [
