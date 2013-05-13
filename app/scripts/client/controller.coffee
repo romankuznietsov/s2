@@ -1,13 +1,17 @@
 require ['gamepad'], (Gamepad) ->
+  wsPort = 3001
+  wsServerPath = "ws://#{window.location.hostname}:#{wsPort}"
+  ws = new WebSocket wsServerPath, 'controller'
+
   gamepad = new Gamepad
-  ws = new WebSocket 'ws://romankuznietsov.asuscomm.com:3001', 'controller'
-  keyInterval = null
+  keySending = null
+  sendInterval = 32
 
   sendKeys = ->
     ws.send JSON.stringify(gamepad.keys)
 
   ws.onopen = ->
-    keyInterval = setInterval(sendKeys, 10)
+    keySending = setInterval(sendKeys, sendInterval)
 
   ws.onclose = ->
-    keyInterval && clearInterval(keyInterval)
+    keySending && clearInterval(keySending)

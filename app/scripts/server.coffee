@@ -3,6 +3,8 @@ WebSocketServer = require('ws').Server
 
 exports.Server =
 class Server
+  updateInterval: 32
+
   constructor: (port) ->
     @port = port
     @screens = {}
@@ -30,7 +32,7 @@ class Server
       data = @world.serialize()
       ws.send JSON.stringify(data)
 
-    @screens[screenId] = setInterval(update, 32)
+    @screens[screenId] = setInterval(update, @updateInterval)
 
     ws.on 'close', =>
       clearInterval @screens[screenId]

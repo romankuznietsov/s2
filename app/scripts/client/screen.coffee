@@ -1,9 +1,12 @@
 require ['drawer'], (Drawer) ->
+  wsPort = 3001
+  wsServerPath = "ws://#{window.location.hostname}:#{wsPort}"
+  ws = new WebSocket wsServerPath, 'screen'
+
   players = []
   shots = []
   drawer = null
 
-  ws = new WebSocket 'ws://romankuznietsov.asuscomm.com:3001', 'screen'
   ws.onmessage = (message) ->
     data = JSON.parse message.data
     {players, shots} = data
