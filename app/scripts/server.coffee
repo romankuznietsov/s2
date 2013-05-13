@@ -42,6 +42,7 @@ class Server
   controller: (ws) ->
     clientId = @world.addPlayer()
     console.log "[*] Controller #{clientId} connected."
+    ws.send clientId.toString()
 
     ws.on 'message', (message) =>
       data = JSON.parse(message)

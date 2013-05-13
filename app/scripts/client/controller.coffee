@@ -13,5 +13,8 @@ require ['gamepad'], (Gamepad) ->
   ws.onopen = ->
     keySending = setInterval(sendKeys, sendInterval)
 
+  ws.onmessage = (message) ->
+    $('.info').html "Player #{message.data}"
+
   ws.onclose = ->
     keySending && clearInterval(keySending)
