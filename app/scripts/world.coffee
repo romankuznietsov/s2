@@ -13,6 +13,7 @@ class World
     player = new Player
       position: @randomPosition()
       direction: 0
+      emitShot: @emitShot
     @players[player.id] = player
     return player.id
 
@@ -25,7 +26,6 @@ class World
   update: =>
     for id, player of @players
       player.update()
-      @shots = @shots.concat player.getShots()
       player.respawn(@randomPosition()) if player.dead()
       @limitPosition(player)
     for shot in @shots
@@ -33,6 +33,9 @@ class World
       @limitPosition(shot)
     @shots = @shots.filter (shot) -> shot.dead() isnt true
     @checkHits()
+
+  emitShot: (shot) =>
+    @shots.push shot
 
   checkHits: ->
     for id, player of @players

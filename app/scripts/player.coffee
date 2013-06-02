@@ -13,7 +13,7 @@ class Player
   constructor: (params) ->
     @id = Player.lastId
     Player.lastId += 1
-    {@position, @direction} = params
+    {@position, @direction, @emitShot} = params
     @speed = 0
     @cooldown = 0
     @keys = {}
@@ -30,6 +30,8 @@ class Player
     @position.x += Math.cos(@directionRad()) * @speed
     @position.y += Math.sin(@directionRad()) * @speed
     @cooldown -= 1 if @cooldown > 0
+    if @keys.fire and @cooldown is 0
+      @shoot()
 
   directionRad: ->
     utils.degToRad(@direction)
@@ -56,15 +58,9 @@ class Player
     direction: @direction
     health: @health / @maxHealth
 
-  getShots: ->
-    shots = []
-    if @keys.fire and @cooldown is 0
-      @cooldown = @shotCooldown
-      shots.push @createShot()
-    return shots
-
-  createShot: ->
-    new Shot
+  shoot: ->
+    @cooldown = @shotCooldown
+    @emitShot new Shot
       position:
         x: @position.x + Math.cos(@directionRad()) * @radius * 1.1
         y: @position.y + Math.sin(@directionRad()) * @radius * 1.1

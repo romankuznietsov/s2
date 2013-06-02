@@ -4,10 +4,15 @@ chai.should()
 {Shot} = require '../app/scripts/shot'
 
 describe 'Player', ->
+  shots = []
+  emitShot = (shot) =>
+    shots.push shot
+
   player = new Player
     position:
       x: 1, y: 2
     direction: 30
+    emitShot: emitShot
 
   it 'should update be controlled by keys', ->
     player.updateKeys up: true
@@ -28,14 +33,15 @@ describe 'Player', ->
       data.should.have.property attr
 
   it 'should generate shots', ->
+    shots.should.be.empty
     player.updateKeys fire: true
-    shots = player.getShots()
-    shots.length.should.not.be.empty
-    shots[0].should.be.instanceof Shot
+    player.update()
+    shots.should.not.be.empty
 
   it 'should have a cooldown', ->
-    player.getShots().should.be.empty
+    shotNumber = shots.length
     player.update()
+    shots.length.should.equal shotNumber
     player.cooldown.should.not.equal player.shotCooldown
 
   it 'should loose health when hit', ->
