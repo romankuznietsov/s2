@@ -4,14 +4,12 @@ chai.should()
 
 describe 'World', ->
   world = new World
-    limits:
-      width: 100, height: 50
+    raidus: 100
   id = null
 
-  it 'should have limits', ->
-    world.should.have.property 'limits'
-    world.limits.width.should.equal 100
-    world.limits.height.should.equal 50
+  it 'should have radius', ->
+    world.should.have.property 'radius'
+    world.radius.should.equal 100
 
   it 'should add a player', ->
     id = world.addPlayer()

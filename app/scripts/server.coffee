@@ -10,8 +10,7 @@ class Server
     @screens = {}
     @lastScreenId = 0
     @world = new World
-      limits:
-        width: 1200, height: 800
+      radius: 300
     @webSocketServer = new WebSocketServer(port: @port)
     console.log "Started websocket server on port #{@port}."
     @webSocketServer.on 'connection', @connection

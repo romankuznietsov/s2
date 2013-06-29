@@ -4,7 +4,7 @@ utils = require './utils'
 exports.World =
 class World
   constructor: (params) ->
-    {@limits} = params
+    {@radius} = params
     @players = {}
     @shots = []
     setInterval(@update, 10)
@@ -29,7 +29,7 @@ class World
       player.respawn(@randomPosition()) if player.dead()
       @limitPosition(player)
     for shot in @shots
-      shot.update(@limits)
+      shot.update()
       @limitPosition(shot)
     @shots = @shots.filter (shot) -> shot.dead() isnt true
     @checkHits()
@@ -52,11 +52,10 @@ class World
     return {players: players, shots: shots}
 
   limitPosition: (object) ->
-    object.position.x = 0 if object.position.x > @limits.width
-    object.position.x = @limits.width if object.position.x < 0
-    object.position.y = 0 if object.position.y > @limits.height
-    object.position.y = @limits.height if object.position.y < 0
+    if utils.distance(object.position, {x: 0, y: 0}) >= @radius
+      object.position.x *= -1
+      object.position.y *= -1
 
   randomPosition: ->
-    x: Math.random() * @limits.width
-    y: Math.random() * @limits.height
+    x: Math.random() * @radius / 2 - @radius / 4
+    y: Math.random() * @radius / 2 - @radius / 4

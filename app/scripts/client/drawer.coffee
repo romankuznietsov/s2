@@ -2,15 +2,15 @@ define ->
   class Drawer
     constructor: (canvas) ->
       @canvas = canvas
+      @canvas.translateCanvas
+        translateX: @canvas.width() / 2
+        translateY: @canvas.height() / 2
 
     fill: (color = '#000') ->
-      @canvas.drawRect
+      @canvas.drawArc
+        x: 0, y: 0
+        radius: 300
         fillStyle: color
-        x: 0
-        y: 0
-        width: @canvas.width()
-        height: @canvas.height()
-        fromCenter: false
 
     drawPlayer: (player) ->
       color = Math.round(player.health * 15).toString(16)
