@@ -3,8 +3,8 @@ define ->
     constructor: ->
       @keys = {}
       $ =>
-        $(document).delegate '.control', 'touchstart', @keyDown
-        $(document).delegate '.control', 'touchend', @keyUp
+        $(document).delegate '.key', 'touchstart', @keyDown
+        $(document).delegate '.key', 'touchend', @keyUp
         $(document).delegate 'body', 'touchstart', -> false
         $(document).delegate 'body', 'touchend', -> false
     keyDown: (event) =>

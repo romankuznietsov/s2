@@ -5,10 +5,11 @@ html(lang='en')
     link(rel='stylesheet', href='stylesheets/controller.css')
     script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js')
     script(src='scripts/requirejs.js', data-main='scripts/controller')
+    meta(name='viewport', content='width=device-width')
   body
     .info Connecting...
-    .control.up(action='up') UP
-    .control.right(action='right') RIGHT
-    .control.left(action='left') LEFT
-    .control.down(action='down') DOWN
-    .control.fire(action='fire') FIRE
+    .key.left-key(action='left') left
+    .key.right-key(action='right') right
+    .key.fire-key(action='fire') fire
+    .key.up-key(action='up') up
+    .key.down-key(action='down') down
