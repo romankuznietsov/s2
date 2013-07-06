@@ -11,7 +11,7 @@ module.exports = (grunt) ->
         tasks: ['jade']
       coffee:
         files: 'app/scripts/client/*.coffee'
-        tasks: ['coffee']
+        tasks: ['coffee:client']
       stylus:
         files: 'app/stylesheets/*.styl'
         tasks: ['stylus']
@@ -29,7 +29,7 @@ module.exports = (grunt) ->
         }]
 
     coffee:
-      compile:
+      client:
         files: [{
           expand: true
           cwd: 'app/scripts/client'
@@ -37,6 +37,12 @@ module.exports = (grunt) ->
           dest: '.tmp/scripts'
           ext: '.js'
         }]
+      development:
+        files:
+          '.tmp/scripts/config.js': 'app/scripts/development.coffee'
+      production:
+        files:
+          '.tmp/scripts/config.js': 'app/scripts/production.coffee'
 
     stylus:
       compile:
@@ -61,14 +67,29 @@ module.exports = (grunt) ->
               mountFolder(connect, 'public')
             ]
 
+    clean: ['.tmp']
+
   grunt.registerTask 'websocket-server', (target) ->
     {Server} = require './app/scripts/server'
     server = new Server(3001)
 
   grunt.registerTask 'server', (target) ->
     grunt.task.run [
+      'clean',
       'jade',
-      'coffee',
+      'coffee:client',
+      'coffee:development',
+      'stylus',
+      'connect:dev',
+      'websocket-server',
+      'regarde'
+    ]
+  grunt.registerTask 'server:production', (target) ->
+    grunt.task.run [
+      'clean',
+      'jade',
+      'coffee:client',
+      'coffee:production',
       'stylus',
       'connect:dev',
       'websocket-server',

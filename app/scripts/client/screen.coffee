@@ -1,7 +1,5 @@
-require ['drawer'], (Drawer) ->
-  wsPort = 3001
-  wsServerPath = "ws://#{window.location.hostname}:#{wsPort}"
-  ws = new WebSocket wsServerPath, 'screen'
+require ['drawer', 'config'], (Drawer, config) ->
+  ws = new WebSocket config.wsServer, 'screen'
 
   players = []
   shots = []

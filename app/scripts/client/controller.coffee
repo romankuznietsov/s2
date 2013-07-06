@@ -1,7 +1,5 @@
-require ['gamepad'], (Gamepad) ->
-  wsPort = 3001
-  wsServerPath = "ws://#{window.location.hostname}:#{wsPort}"
-  ws = new WebSocket wsServerPath, 'controller'
+require ['gamepad', 'config'], (Gamepad, config) ->
+  ws = new WebSocket config.wsServer, 'controller'
 
   gamepad = new Gamepad
   keySending = null
