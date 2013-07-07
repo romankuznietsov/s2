@@ -45,8 +45,7 @@ define ->
 
     drawShot: (shot) ->
       @canvas.drawArc
-        strokeStyle: '#ff0'
-        strokeWidth: 1
+        fillStyle: '#ff0'
         x: shot.position.x
         y: shot.position.y
         radius: 2
