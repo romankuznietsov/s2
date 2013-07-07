@@ -8,8 +8,10 @@ html(lang='en')
     meta(name='viewport', content='width=device-width')
   body
     .info Connecting...
-    .key.left-key(action='left') ◁
-    .key.right-key(action='right') ▷
-    .key.fire-key(action='fire') &times;
-    .key.up-key(action='up') △
-    .key.down-key(action='down') ▽
+    .direction-keys
+      .key.left-key(action='left') ◁
+      .key.right-key(action='right') ▷
+    .fire-and-speed-keys
+      .key.fire-key(action='fire') &times;
+      .key.up-key(action='up') △
+      .key.down-key(action='down') ▽
