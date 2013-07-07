@@ -4,6 +4,7 @@ require ['drawer', 'config'], (Drawer, config) ->
   players = []
   shots = []
   drawer = null
+  canvas = null
 
   ws.onmessage = (message) ->
     data = JSON.parse message.data
@@ -12,12 +13,25 @@ require ['drawer', 'config'], (Drawer, config) ->
     console.log 'disconnected'
 
   update = ->
-    drawer.fill()
+    drawer.clear()
     for player in players
       drawer.drawPlayer(player)
     for shot in shots
       drawer.drawShot(shot)
 
+  fit = ->
+    console.log 'fit'
+    if window.innerWidth / window.innerHeight >= 1.5
+      $(canvas).css('height', window.innerHeight * 0.95)
+      $(canvas).css('width', window.innerHeight * 1.5 * 0.95)
+    else
+      $(canvas).css('width', window.innerWidth * 0.95)
+      $(canvas).css('height', window.innerWidth / 1.5 * 0.95)
+
   $ ->
-    drawer = new Drawer($ 'canvas')
+    canvas = $('#canvas')
+    drawer = new Drawer(canvas)
     setInterval(update, 10)
+    fit()
+
+  $(window).resize fit

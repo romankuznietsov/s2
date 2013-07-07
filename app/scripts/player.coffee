@@ -3,9 +3,9 @@ utils = require './utils'
 
 exports.Player =
 class Player
-  acceleration: 0.01
+  acceleration: 0.02
   topSpeed: 2
-  turnSpeed: 2
+  turnSpeed: 1
   shotCooldown: 20
   maxHealth: 3
   radius: 10

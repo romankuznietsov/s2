@@ -3,14 +3,8 @@ define ->
     constructor: (canvas) ->
       @canvas = canvas
 
-    fill: (color = '#000') ->
-      @canvas.drawRect
-        fillStyle: color
-        x: 0
-        y: 0
-        width: @canvas.width()
-        height: @canvas.height()
-        fromCenter: false
+    clear: ->
+      @canvas.clearCanvas fillStyle: 'black'
 
     drawPlayer: (player) ->
       color = Math.round(player.health * 15).toString(16)
