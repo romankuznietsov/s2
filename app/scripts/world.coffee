@@ -52,10 +52,10 @@ class World
     return {players: players, shots: shots}
 
   limitPosition: (object) ->
-    object.position.x = 0 if object.position.x > @limits.width
-    object.position.x = @limits.width if object.position.x < 0
-    object.position.y = 0 if object.position.y > @limits.height
-    object.position.y = @limits.height if object.position.y < 0
+    object.position.x -= @limits.width if object.position.x > @limits.width
+    object.position.x += @limits.width if object.position.x < 0
+    object.position.y -= @limits.height if object.position.y > @limits.height
+    object.position.y += @limits.height if object.position.y < 0
 
   randomPosition: ->
     x: Math.random() * @limits.width
