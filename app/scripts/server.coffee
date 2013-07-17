@@ -1,4 +1,5 @@
 WebSocketServer = require('ws').Server
+SocketIo = require 'socket.io'
 {World} = require './world'
 
 exports.Server =

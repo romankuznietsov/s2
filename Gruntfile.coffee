@@ -65,6 +65,7 @@ module.exports = (grunt) ->
             return [
               mountFolder(connect, '.tmp'),
               mountFolder(connect, 'public')
+              mountFolder(connect, 'components')
             ]
 
     clean: ['.tmp']
