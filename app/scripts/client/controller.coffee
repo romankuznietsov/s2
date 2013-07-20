@@ -1,18 +1,16 @@
-require ['gamepad', 'config'], (Gamepad, config) ->
-  ws = new WebSocket config.wsServer, 'controller'
-
+require ['gamepad', 'config', '../socket.io-client/dist/socket.io.min'], (Gamepad, config, SocketIo) ->
   gamepad = new Gamepad
   keySending = null
   sendInterval = 32
 
+  socket = SocketIo.connect config.socketIo, query: 'role=controller'
+
   sendKeys = ->
-    ws.send JSON.stringify(gamepad.keys)
+    socket.emit 'keys', gamepad.keys
 
-  ws.onopen = ->
+  socket.on 'id', (id) ->
     keySending = setInterval(sendKeys, sendInterval)
+    $('.info').html id
 
-  ws.onmessage = (message) ->
-    $('.info').html "Player #{message.data}"
-
-  ws.onclose = ->
+  socket.on 'disconnect', ->
     keySending && clearInterval(keySending)

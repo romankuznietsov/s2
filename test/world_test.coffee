@@ -33,8 +33,8 @@ describe 'World', ->
       position:
         x: -10, y: -10
     world.limitPosition(object)
-    object.position.x.should.equal world.limits.width
-    object.position.y.should.equal world.limits.height
+    object.position.x.should.equal world.limits.width - 10
+    object.position.y.should.equal world.limits.height - 10
 
   it 'should have shots if a player shoots', ->
     id = world.addPlayer()

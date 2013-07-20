@@ -1,15 +1,15 @@
-require ['drawer', 'config'], (Drawer, config) ->
-  ws = new WebSocket config.wsServer, 'screen'
-
+require ['drawer', 'config', '../socket.io-client/dist/socket.io.min'], (Drawer, config, SocketIo) ->
   players = []
   shots = []
   drawer = null
   canvas = null
 
-  ws.onmessage = (message) ->
-    data = JSON.parse message.data
+  socket = SocketIo.connect config.socketIo, query: 'role=screen'
+
+  socket.on 'update', (data) ->
     {players, shots} = data
-  ws.onclose = ->
+
+  socket.on 'disconnect', ->
     console.log 'disconnected'
 
   update = ->
@@ -20,7 +20,6 @@ require ['drawer', 'config'], (Drawer, config) ->
       drawer.drawShot(shot)
 
   fit = ->
-    console.log 'fit'
     if window.innerWidth / window.innerHeight >= 1.5
       $(canvas).css('height', window.innerHeight * 0.95)
       $(canvas).css('width', window.innerHeight * 1.5 * 0.95)

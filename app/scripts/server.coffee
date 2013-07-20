@@ -1,5 +1,3 @@
-WebSocketServer = require('ws').Server
-SocketIo = require 'socket.io'
 {World} = require './world'
 
 exports.Server =
@@ -7,48 +5,45 @@ class Server
   updateInterval: 32
 
   constructor: (port) ->
-    @port = port
+    @socketIo = require('socket.io').listen(port)
     @screens = {}
     @lastScreenId = 0
     @world = new World
       limits:
         width: 1200, height: 800
-    @webSocketServer = new WebSocketServer(port: @port)
-    console.log "Started websocket server on port #{@port}."
-    @webSocketServer.on 'connection', @connection
+    @socketIo.set 'log level', 2
+    @socketIo.on 'connection', @connection
 
-  connection: (ws) =>
-    switch ws.protocol
+  connection: (socket) =>
+    switch socket.handshake.query.role
       when 'screen'
-        @screen(ws)
+        @screen(socket)
       when 'controller'
-       @controller(ws)
+       @controller(socket)
 
-  screen: (ws) ->
+  screen: (socket) ->
     screenId = @lastScreenId
     @lastScreenId += 1
-    console.log "[*] Screen #{screenId} connected."
+    console.log "[*] Screen #{screenId} connected. Using #{socket.transport}."
 
     update = =>
-      data = @world.serialize()
-      ws.send JSON.stringify(data)
+      socket.emit 'update', @world.serialize()
 
     @screens[screenId] = setInterval(update, @updateInterval)
 
-    ws.on 'close', =>
+    socket.on 'disconnect', =>
       clearInterval @screens[screenId]
       delete @screens[screenId]
       console.log "[*] Screen #{screenId} disconnected."
 
-  controller: (ws) ->
+  controller: (socket) ->
     clientId = @world.addPlayer()
-    console.log "[*] Controller #{clientId} connected."
-    ws.send clientId.toString()
+    console.log "[*] Controller #{clientId} connected. Using #{socket.transport}."
+    socket.emit 'id', clientId
 
-    ws.on 'message', (message) =>
-      data = JSON.parse(message)
+    socket.on 'keys', (data) =>
       @world.updatePlayersKeys(clientId, data)
 
-    ws.on 'close', =>
+    socket.on 'disconnect', =>
       @world.removePlayer(clientId)
       console.log "[*] Controller #{clientId} disconnected."
