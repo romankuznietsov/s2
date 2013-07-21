@@ -1,10 +1,10 @@
-require ['drawer', 'config', '../socket.io-client/dist/socket.io.min'], (Drawer, config, SocketIo) ->
+require ['drawer', '../socket.io-client/dist/socket.io.min'], (Drawer, SocketIo) ->
   players = []
   shots = []
   drawer = null
   canvas = null
 
-  socket = SocketIo.connect config.socketIo, query: 'role=screen'
+  socket = SocketIo.connect window.location.origin, query: 'role=screen'
 
   socket.on 'update', (data) ->
     {players, shots} = data

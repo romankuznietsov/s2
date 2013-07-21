@@ -1,9 +1,9 @@
-require ['gamepad', 'config', '../socket.io-client/dist/socket.io.min'], (Gamepad, config, SocketIo) ->
+require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketIo) ->
   gamepad = new Gamepad
   keySending = null
   sendInterval = 32
 
-  socket = SocketIo.connect config.socketIo, query: 'role=controller'
+  socket = SocketIo.connect window.location.origin, query: 'role=controller'
 
   sendKeys = ->
     socket.emit 'keys', gamepad.keys

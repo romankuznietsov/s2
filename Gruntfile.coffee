@@ -29,7 +29,7 @@ module.exports = (grunt) ->
         }]
 
     coffee:
-      client:
+      compile:
         files: [{
           expand: true
           cwd: 'app/scripts/client'
@@ -37,12 +37,6 @@ module.exports = (grunt) ->
           dest: '.tmp/scripts'
           ext: '.js'
         }]
-      development:
-        files:
-          '.tmp/scripts/config.js': 'app/scripts/development.coffee'
-      production:
-        files:
-          '.tmp/scripts/config.js': 'app/scripts/production.coffee'
 
     stylus:
       compile:
@@ -78,19 +72,7 @@ module.exports = (grunt) ->
     grunt.task.run [
       'clean',
       'jade',
-      'coffee:client',
-      'coffee:development',
-      'stylus',
-      'connect:dev',
-      'websocket-server',
-      'regarde'
-    ]
-  grunt.registerTask 'server:production', (target) ->
-    grunt.task.run [
-      'clean',
-      'jade',
-      'coffee:client',
-      'coffee:production',
+      'coffee',
       'stylus',
       'connect:dev',
       'websocket-server',
