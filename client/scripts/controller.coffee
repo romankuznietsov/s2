@@ -8,9 +8,18 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
   sendKeys = ->
     socket.emit 'keys', gamepad.keys
 
-  socket.on 'id', (id) ->
-    keySending = setInterval(sendKeys, sendInterval)
-    $('.info').html id
+  setIndicatorColor = (color) ->
+    $('.color-indicator').css('background-color', color || 'transparent')
 
-  socket.on 'disconnect', ->
+  setInfoText = (text) ->
+    $('.info').html(text || '')
+
+  socket.on 'connected', (color) ->
+    keySending = setInterval(sendKeys, sendInterval)
+    setInfoText()
+    setIndicatorColor(color)
+
+  socket.on 'disconnect', () ->
+    setIndicatorColor()
+    setInfoText('Disconnected')
     keySending && clearInterval(keySending)

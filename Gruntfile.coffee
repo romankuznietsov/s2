@@ -11,7 +11,7 @@ module.exports = (grunt) ->
         tasks: ['jade']
       coffee:
         files: 'client/scripts/*.coffee'
-        tasks: ['coffee:client']
+        tasks: ['coffee']
       stylus:
         files: 'client/stylesheets/*.styl'
         tasks: ['stylus']

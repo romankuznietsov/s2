@@ -14,8 +14,7 @@ define ->
           translateY: player.position.y
         .drawLine
           rotate: player.direction
-          strokeStyle: "#f#{color}#{color}"
-          strokeWidth: 2
+          fillStyle: player.color
           closed: true
           rounded: true
           x1: 15
@@ -27,15 +26,6 @@ define ->
           x4: -8
           y4: -8
         .restoreCanvas()
-      @canvas.drawText
-        strokeStyle: '#999'
-        fillStyle: '#999'
-        text: player.id
-        x: player.position.x + 20
-        y: player.position.y + 20
-        fontFamily: 'sans-serif'
-        fontSize: '10px'
-
 
     drawShot: (shot) ->
       @canvas.drawArc

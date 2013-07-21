@@ -13,12 +13,14 @@ describe 'World', ->
     world.limits.height.should.equal 50
 
   it 'should add a player', ->
-    id = world.addPlayer()
+    {status, id, color} = world.join()
     world.players.should.have.property id
+    world.colors.length.should.equal 7
 
   it 'should remove player', ->
     world.removePlayer(id)
     world.players.should.not.have.property id
+    world.colors.length.should.equal 8
 
   it 'should serialize itself', ->
     data = world.serialize()
@@ -36,7 +38,7 @@ describe 'World', ->
     object.position.y.should.equal world.limits.height - 10
 
   it 'should have shots if a player shoots', ->
-    id = world.addPlayer()
+    {status, id, color} = world.join()
     world.updatePlayersKeys(id, fire: true)
     world.update()
     world.shots.should.not.be.empty

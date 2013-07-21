@@ -11,9 +11,7 @@ class Player
   radius: 10
 
   constructor: (params) ->
-    @id = Player.lastId
-    Player.lastId += 1
-    {@position, @direction, @emitShot} = params
+    {@position, @direction, @emitShot, @color} = params
     @speed = 0
     @cooldown = 0
     @keys = {}
@@ -53,10 +51,10 @@ class Player
     @direction = 0 if @direction > 360
 
   serialize: ->
-    id: @id
     position: @position
     direction: @direction
     health: @health / @maxHealth
+    color: @color
 
   shoot: ->
     @cooldown = @shotCooldown
@@ -78,5 +76,3 @@ class Player
 
   hit: ->
     @health -= 1 if @health > 0
-
-Player.lastId = 0

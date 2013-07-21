@@ -12,6 +12,7 @@ describe 'Player', ->
       x: 1, y: 2
     direction: 30
     emitShot: emitShot
+    color: '#fff'
 
   it 'should update be controlled by keys', ->
     player.updateKeys up: true
@@ -28,7 +29,7 @@ describe 'Player', ->
 
   it 'should serialize', ->
     data = player.serialize()
-    for attr in ['id', 'position', 'direction', 'health']
+    for attr in ['position', 'direction', 'health', 'color']
       data.should.have.property attr
 
   it 'should generate shots', ->

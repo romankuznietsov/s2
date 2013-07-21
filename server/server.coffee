@@ -37,13 +37,16 @@ class Server
       console.log "[*] Screen #{screenId} disconnected."
 
   controller: (socket) ->
-    clientId = @world.addPlayer()
-    console.log "[*] Controller #{clientId} connected. Using #{socket.transport}."
-    socket.emit 'id', clientId
-
-    socket.on 'keys', (data) =>
-      @world.updatePlayersKeys(clientId, data)
-
-    socket.on 'disconnect', =>
-      @world.removePlayer(clientId)
-      console.log "[*] Controller #{clientId} disconnected."
+    {status, id, color} = @world.join()
+    if status is 'connected'
+      console.log "[*] Controller #{id} connected. Using #{socket.transport}."
+      socket.emit 'connected', color
+      socket.on 'keys', (data) =>
+        @world.updatePlayersKeys(id, data)
+      socket.on 'disconnect', =>
+        @world.removePlayer(id)
+        console.log "[*] Controller #{id} disconnected."
+    else
+      console.log '[*] Connection rejected. Room if full.'
+      socket.disconnect('Room is full')
+      return
