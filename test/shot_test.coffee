@@ -1,5 +1,5 @@
 require('chai').should()
-{Shot} = require '../app/scripts/shot'
+{Shot} = require '../server/shot'
 
 describe 'Shot', ->
   shot = new Shot

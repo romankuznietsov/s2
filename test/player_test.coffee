@@ -1,6 +1,6 @@
 require('chai').should()
-{Player} = require '../app/scripts/player'
-{Shot} = require '../app/scripts/shot'
+{Player} = require '../server/player'
+{Shot} = require '../server/shot'
 
 describe 'Player', ->
   shots = []

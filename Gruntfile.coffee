@@ -7,13 +7,13 @@ module.exports = (grunt) ->
   grunt.initConfig
     regarde:
       jade:
-        files: 'app/templates/*.jade'
+        files: 'client/templates/*.jade'
         tasks: ['jade']
       coffee:
-        files: 'app/scripts/client/*.coffee'
+        files: 'client/scripts/*.coffee'
         tasks: ['coffee:client']
       stylus:
-        files: 'app/stylesheets/*.styl'
+        files: 'client/stylesheets/*.styl'
         tasks: ['stylus']
 
     jade:
@@ -22,7 +22,7 @@ module.exports = (grunt) ->
           pretty: true
         files: [{
           expand: true
-          cwd: 'app/templates'
+          cwd: 'client/templates'
           src: '*.jade'
           dest: '.tmp'
           ext: '.html'
@@ -32,7 +32,7 @@ module.exports = (grunt) ->
       compile:
         files: [{
           expand: true
-          cwd: 'app/scripts/client'
+          cwd: 'client/scripts'
           src: '*.coffee'
           dest: '.tmp/scripts'
           ext: '.js'
@@ -42,7 +42,7 @@ module.exports = (grunt) ->
       compile:
         files: [{
           expand: true
-          cwd: 'app/stylesheets'
+          cwd: 'client/stylesheets'
           src: '*.styl'
           dest: '.tmp/stylesheets'
           ext: '.css'
@@ -65,7 +65,7 @@ module.exports = (grunt) ->
     clean: ['.tmp']
 
   grunt.registerTask 'websocket-server', (target) ->
-    {Server} = require './app/scripts/server'
+    {Server} = require './server/server'
     server = new Server(3001)
 
   grunt.registerTask 'server', (target) ->

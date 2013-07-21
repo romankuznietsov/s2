@@ -1,5 +1,5 @@
 require('chai').should()
-{World} = require '../app/scripts/world'
+{World} = require '../server/world'
 
 describe 'World', ->
   world = new World
