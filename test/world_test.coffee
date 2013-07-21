@@ -1,5 +1,4 @@
-chai = require 'chai'
-chai.should()
+require('chai').should()
 {World} = require '../app/scripts/world'
 
 describe 'World', ->
