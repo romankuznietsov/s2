@@ -42,7 +42,7 @@ class World
       player.respawn(@randomPosition()) if player.dead()
       @limitPosition(player)
     for shot in @shots
-      shot.update(@limits)
+      shot.update()
       @limitPosition(shot)
     @shots = @shots.filter (shot) -> shot.dead() isnt true
     @checkHits()
