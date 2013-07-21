@@ -24,9 +24,12 @@ body
   font-size 36px
   position absolute
   background black
+  background-position center
+  background-repeat no-repeat
+  background-size 50%
 
 .key.active
-  background #444
+  background-color #444
 
 .direction-keys
   position fixed
@@ -44,9 +47,11 @@ body
 
 .left-key
   left 0
+  background-image url('/left.png')
 
 .right-key
   right 0
+  background-image url('/right.png')
 
 .fire-and-speed-keys
   position fixed
@@ -72,15 +77,18 @@ body
   color fire-key-color
   text-shadow 0 0 10px fire-key-color
   box-shadow 0 0 10px fire-key-color
+  background-image url('/fire.png')
 
 .up-key
   right 0
   top 0
   width 45%
   height 35%
+  background-image url('/up.png')
 
 .down-key
   left 0
   top 0
   width 45%
   height 35%
+  background-image url('/down.png')
