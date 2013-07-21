@@ -25,12 +25,10 @@ class Server
     screenId = @lastScreenId
     @lastScreenId += 1
     console.log "[*] Screen #{screenId} connected. Using #{socket.transport}."
-
+    socket.emit 'limits', @world.limits
     update = =>
       socket.emit 'update', @world.serialize()
-
     @screens[screenId] = setInterval(update, @updateInterval)
-
     socket.on 'disconnect', =>
       clearInterval @screens[screenId]
       delete @screens[screenId]

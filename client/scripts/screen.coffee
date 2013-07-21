@@ -1,36 +1,50 @@
 require ['drawer', '../socket.io-client/dist/socket.io.min'], (Drawer, SocketIo) ->
-  players = []
-  shots = []
-  drawer = null
-  canvas = null
+  class Screen
+    redrawPeriod: 32
 
-  socket = SocketIo.connect window.location.origin, query: 'role=screen'
+    constructor: ->
+      @players = []
+      @shots = []
+      @canvas = $('#canvas')
+      @drawer = new Drawer(@canvas)
+      @connect()
+      setInterval(@redraw, @redrawPeriod)
+      $(window).resize @fitCanvas
 
-  socket.on 'update', (data) ->
-    {players, shots} = data
+    connect: ->
+      @socket = SocketIo.connect window.location.origin,
+        query: 'role=screen'
+      @socket.on 'limits', @setLimits
+      @socket.on 'update', @update
+      @socket.on 'disconnected', @disconnect
 
-  socket.on 'disconnect', ->
-    console.log 'disconnected'
+    setLimits: (data) =>
+      {@width, @height} = data
+      @canvas.attr 'width', @width
+      @canvas.attr 'height', @height
+      @fitCanvas()
 
-  update = ->
-    drawer.clear()
-    for player in players
-      drawer.drawPlayer(player)
-    for shot in shots
-      drawer.drawShot(shot)
+    update: (data) =>
+      {@players, @shots} = data
 
-  fit = ->
-    if window.innerWidth / window.innerHeight >= 1.5
-      $(canvas).css('height', window.innerHeight * 0.95)
-      $(canvas).css('width', window.innerHeight * 1.5 * 0.95)
-    else
-      $(canvas).css('width', window.innerWidth * 0.95)
-      $(canvas).css('height', window.innerWidth / 1.5 * 0.95)
+    disconnect: ->
+      console.log 'disconnected'
+
+    redraw: =>
+      @drawer.clear()
+      for player in @players
+        @drawer.drawPlayer(player)
+      for shot in @shots
+        @drawer.drawShot(shot)
+
+    fitCanvas: =>
+      ratio = @width / @height
+      if window.innerWidth / window.innerHeight >= ratio
+        @canvas.height window.innerHeight * 0.95
+        @canvas.width window.innerHeight * ratio * 0.95
+      else
+        @canvas.width window.innerWidth * 0.95
+        @canvas.height window.innerWidth / ratio * 0.95
 
   $ ->
-    canvas = $('#canvas')
-    drawer = new Drawer(canvas)
-    setInterval(update, 10)
-    fit()
-
-  $(window).resize fit
+    new Screen
