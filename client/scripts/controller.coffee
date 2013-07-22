@@ -1,25 +1,34 @@
 require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketIo) ->
-  gamepad = new Gamepad
-  keySending = null
-  sendInterval = 32
+  class Controller
+    sendInterval: 32
+    constructor: ->
+      @gamepad = new Gamepad
+      @connect()
 
-  socket = SocketIo.connect window.location.origin, query: 'role=controller'
+    connect: ->
+      @socket = SocketIo.connect window.location.origin,
+        query: 'role=controller'
+      @socket.on 'connected', @connected
+      @socket.on 'disconnect', @disconnect
 
-  sendKeys = ->
-    socket.emit 'keys', gamepad.keys
+    setIndicatorColor: (color) ->
+      $('.color-indicator').css('background-color', color || 'transparent')
 
-  setIndicatorColor = (color) ->
-    $('.color-indicator').css('background-color', color || 'transparent')
+    setInfoText: (text) ->
+      $('.info').html(text || '')
 
-  setInfoText = (text) ->
-    $('.info').html(text || '')
+    connected: (color) =>
+      @keySending = setInterval(@sendKeys, @sendInterval)
+      @setInfoText()
+      @setIndicatorColor(color)
 
-  socket.on 'connected', (color) ->
-    keySending = setInterval(sendKeys, sendInterval)
-    setInfoText()
-    setIndicatorColor(color)
+    disconnect: =>
+      @setIndicatorColor()
+      @setInfoText('Disconnected')
+      @keySending && clearInterval(@keySending)
 
-  socket.on 'disconnect', () ->
-    setIndicatorColor()
-    setInfoText('Disconnected')
-    keySending && clearInterval(keySending)
+    sendKeys: =>
+      @socket.emit 'keys', @gamepad.keys
+
+  $ ->
+    new Controller
