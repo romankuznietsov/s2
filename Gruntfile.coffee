@@ -51,7 +51,7 @@ module.exports = (grunt) ->
 
     connect:
       options:
-        port: 3000
+        port: grunt.option('port') || 3000
         hostname: '0.0.0.0'
       dev:
         options:
@@ -64,9 +64,9 @@ module.exports = (grunt) ->
 
     clean: ['.tmp']
 
-  grunt.registerTask 'websocket-server', (target) ->
+  grunt.registerTask 'gameserver', (target) ->
     {Server} = require './server/server'
-    server = new Server(3001)
+    server = new Server(grunt.option('socket-port') || 3001)
 
   grunt.registerTask 'server', (target) ->
     grunt.task.run [
@@ -75,6 +75,6 @@ module.exports = (grunt) ->
       'coffee',
       'stylus',
       'connect:dev',
-      'websocket-server',
+      'gameserver',
       'regarde'
     ]
