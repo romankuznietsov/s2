@@ -17,6 +17,7 @@ class Shot
   update: =>
     @life -= 1
     @move()
+    @emitter.emit 'shotMoved', @
 
   move: ->
     @position.x += @speed.x
@@ -34,3 +35,6 @@ class Shot
 
   serialize: ->
     position: @position
+
+  removeListeners: ->
+    @emitter.removeListener 'update', @update

@@ -16,6 +16,7 @@ class Player
     @reset()
     @setRandomPosition()
     @emitter.on 'update', @update
+    @emitter.on 'shotMoved', @checkHit
 
   updateKeys: (keys) ->
     @keys = keys
@@ -94,3 +95,12 @@ class Player
 
   hit: ->
     @health -= 1 if @health > 0
+
+  checkHit: (shot) =>
+    if utils.distance(@position, shot.position) < @radius
+      @hit()
+      shot.hitShip()
+
+  removeListeners: ->
+    @emitter.removeListener 'update', @update
+    @emitter.removeListener 'shotMoved', @checkHit

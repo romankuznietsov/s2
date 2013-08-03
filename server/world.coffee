@@ -1,5 +1,4 @@
 {Player} = require './player'
-utils = require './utils'
 {EventEmitter} = require 'events'
 
 exports.World =
@@ -30,6 +29,7 @@ class World
 
   removePlayer: (id) ->
     @colors.push @players[id].color
+    @players[id].removeListeners()
     delete @players[id]
 
   updatePlayersKeys: (id, keys) ->
@@ -40,18 +40,12 @@ class World
 
   update: =>
     @emitter.emit 'update'
-    @shots = @shots.filter (shot) -> shot.dead() isnt true
-    @checkHits()
+    for shot in @shots.filter((shot)->shot.dead())
+      shot.removeListeners()
+    @shots = @shots.filter((shot)->!shot.dead())
 
   addShots: (shots) =>
     @shots = @shots.concat shots
-
-  checkHits: ->
-    for id, player of @players
-      for shot in @shots
-        if utils.distance(player.position, shot.position) < player.radius
-          shot.hitShip()
-          player.hit()
 
   serialize: () ->
     players = []
