@@ -11,15 +11,16 @@ class Player
   radius: 10
 
   constructor: (params) ->
-    {@limits, @emitShot, @color} = params
+    {@limits, @color, @emitter} = params
     @keys = {}
     @reset()
     @setRandomPosition()
+    @emitter.on 'update', @update
 
   updateKeys: (keys) ->
     @keys = keys
 
-  update: ->
+  update: =>
     @accelerate() if @keys.up
     @brake() if @keys.down
     @turnLeft() if @keys.left
@@ -79,12 +80,14 @@ class Player
 
   shoot: ->
     @cooldown = @shotCooldown
-    @emitShot new Shot
+    shot = new Shot
+      emitter: @emitter
       position:
         x: @position.x + Math.cos(@directionRad()) * @radius * 1.1
         y: @position.y + Math.sin(@directionRad()) * @radius * 1.1
       direction: @direction
       limits: @limits
+    @emitter.emit 'shots', [shot]
 
   dead: ->
     @health <= 0

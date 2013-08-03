@@ -1,8 +1,11 @@
 require('chai').should()
 {Shot} = require '../server/shot'
+{EventEmitter} = require 'events'
 
 describe 'Shot', ->
+  emitter = new EventEmitter
   shot = new Shot
+    emitter: emitter
     position:
       x: 0, y: 0
     limits:
@@ -18,7 +21,7 @@ describe 'Shot', ->
     shot.dead().should.be.true
 
   it 'should update life and position', ->
-    shot.update()
+    emitter.emit 'update'
     shot.position.x.should.equal shot.scalarSpeed
     shot.position.y.should.equal 0
     shot.life.should.equal (shot.lifeLength - 1)

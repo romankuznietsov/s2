@@ -6,14 +6,15 @@ class Shot
   scalarSpeed: 3
 
   constructor: (params) ->
-    {@position, @limits, direction} = params
+    {@emitter, @position, @limits, direction} = params
     @speed =
       x: Math.cos(utils.degToRad(direction)) * @scalarSpeed
       y: Math.sin(utils.degToRad(direction)) * @scalarSpeed
     @life = @lifeLength
     @hit = false
+    @emitter.on 'update', @update
 
-  update: ->
+  update: =>
     @life -= 1
     @move()
 

@@ -1,5 +1,6 @@
 {Player} = require './player'
 utils = require './utils'
+{EventEmitter} = require 'events'
 
 exports.World =
 class World
@@ -10,17 +11,19 @@ class World
 
   constructor: (params) ->
     {@limits} = params
+    @emitter = new EventEmitter
     @players = {}
     @lastPlayerId = 0
     @shots = []
+    @emitter.on 'shots', @addShots
     setInterval(@update, 10)
 
   join: ->
     return {status: 'rejected'} if @playerLimitReached()
     player = new Player
       limits: @limits
-      emitShot: @emitShot
       color: @colors.pop()
+      emitter: @emitter
     @lastPlayerId += 1
     @players[@lastPlayerId] = player
     return status: 'connected', id: @lastPlayerId, color: player.color
@@ -36,15 +39,12 @@ class World
     @colors.length == 0
 
   update: =>
-    for id, player of @players
-      player.update()
-    for shot in @shots
-      shot.update()
+    @emitter.emit 'update'
     @shots = @shots.filter (shot) -> shot.dead() isnt true
     @checkHits()
 
-  emitShot: (shot) =>
-    @shots.push shot
+  addShots: (shots) =>
+    @shots = @shots.concat shots
 
   checkHits: ->
     for id, player of @players
