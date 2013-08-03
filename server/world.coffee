@@ -7,15 +7,17 @@ class World
     '#1ABC9C', '#2ECC71', '#3468DB', '#9B59B6',
     '#F1C40F', '#E67E22', '#E74C3C', '#ECF0F1'
   ]
+  updatePeriod: 10
 
   constructor: (params) ->
     {@limits} = params
     @emitter = new EventEmitter
+    @emitter.setMaxListeners(1000)
     @players = {}
     @lastPlayerId = 0
     @shots = []
     @emitter.on 'shots', @addShots
-    setInterval(@update, 10)
+    setInterval(@update, @updatePeriod)
 
   join: ->
     return {status: 'rejected'} if @playerLimitReached()
