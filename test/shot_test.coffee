@@ -5,6 +5,8 @@ describe 'Shot', ->
   shot = new Shot
     position:
       x: 0, y: 0
+    limits:
+      x: 100, y: 100
     direction: 0
 
   it 'should serialize', ->

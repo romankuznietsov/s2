@@ -84,6 +84,7 @@ class Player
         x: @position.x + Math.cos(@directionRad()) * @radius * 1.1
         y: @position.y + Math.sin(@directionRad()) * @radius * 1.1
       direction: @direction
+      limits: @limits
 
   dead: ->
     @health <= 0

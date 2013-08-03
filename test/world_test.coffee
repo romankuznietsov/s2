@@ -29,14 +29,6 @@ describe 'World', ->
     data.should.have.property 'shots'
     data.shots.should.be.instanceof Array
 
-  it 'should limit position', ->
-    object =
-      position:
-        x: -10, y: -10
-    world.limitPosition(object)
-    object.position.x.should.equal world.limits.width - 10
-    object.position.y.should.equal world.limits.height - 10
-
   it 'should have shots if a player shoots', ->
     {status, id, color} = world.join()
     world.updatePlayersKeys(id, fire: true)
@@ -48,8 +40,3 @@ describe 'World', ->
       shot.hitShip()
     world.update()
     world.shots.should.be.empty
-
-  it 'should generate random position', ->
-    position = world.randomPosition()
-    position.x.should.be.a 'number'
-    position.y.should.be.a 'number'
