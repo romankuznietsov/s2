@@ -18,8 +18,7 @@ class World
   join: ->
     return {status: 'rejected'} if @playerLimitReached()
     player = new Player
-      position: @randomPosition()
-      direction: 0
+      limits: @limits
       emitShot: @emitShot
       color: @colors.pop()
     @lastPlayerId += 1
@@ -39,8 +38,6 @@ class World
   update: =>
     for id, player of @players
       player.update()
-      player.respawn(@randomPosition()) if player.dead()
-      @limitPosition(player)
     for shot in @shots
       shot.update()
       @limitPosition(shot)

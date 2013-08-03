@@ -8,9 +8,8 @@ describe 'Player', ->
     shots.push shot
 
   player = new Player
-    position:
-      x: 1, y: 2
-    direction: 30
+    limits:
+      x: 100, y: 100
     emitShot: emitShot
     color: '#fff'
 
@@ -21,7 +20,7 @@ describe 'Player', ->
 
     player.updateKeys left: true
     player.update()
-    player.direction.should.be.lessThan 30
+    player.direction.should.not.equal 0
 
   it 'should update position', ->
     player.position.x.should.not.equal 1
@@ -49,10 +48,10 @@ describe 'Player', ->
     player.health.should.be.lessThan player.maxHealth
 
   it 'should reset on respawn', ->
-    player.respawn x: 0, y: 0
+    for _ in [1..3]
+      player.hit()
+    player.update()
     player.health.should.equal player.maxHealth
     player.cooldown.should.equal 0
     player.speed.should.equal 0
     player.direction.should.equal 0
-    player.position.x.should.equal 0
-    player.position.y.should.equal 0

@@ -11,11 +11,10 @@ class Player
   radius: 10
 
   constructor: (params) ->
-    {@position, @direction, @emitShot, @color} = params
-    @speed = 0
-    @cooldown = 0
+    {@limits, @emitShot, @color} = params
     @keys = {}
-    @health = @maxHealth
+    @reset()
+    @setRandomPosition()
 
   updateKeys: (keys) ->
     @keys = keys
@@ -25,11 +24,33 @@ class Player
     @brake() if @keys.down
     @turnLeft() if @keys.left
     @turnRight() if @keys.right
+    @move()
+    @cooldown -= 1 if @cooldown > 0
+    @shoot() if @keys.fire and @cooldown is 0
+    @respawn() if @dead()
+
+  move: ->
     @position.x += Math.cos(@directionRad()) * @speed
     @position.y += Math.sin(@directionRad()) * @speed
-    @cooldown -= 1 if @cooldown > 0
-    if @keys.fire and @cooldown is 0
-      @shoot()
+    @position.x -= @limits.width if @position.x > @limits.width
+    @position.y -= @limits.height if @position.y > @limits.height
+    @position.x += @limits.width if @position.x < 0
+    @position.y += @limits.height if @position.y < 0
+
+  respawn: ->
+    @reset()
+    @setRandomPosition()
+
+  reset: ->
+    @health = @maxHealth
+    @cooldown = 0
+    @speed = 0
+    @direction = 0
+
+  setRandomPosition: ->
+    @position =
+      x: @limits.width * Math.random()
+      y: @limits.height * Math.random()
 
   directionRad: ->
     utils.degToRad(@direction)
@@ -66,13 +87,6 @@ class Player
 
   dead: ->
     @health <= 0
-
-  respawn: (position) ->
-    @health = @maxHealth
-    @cooldown = 0
-    @speed = 0
-    @direction = 0
-    @position = position
 
   hit: ->
     @health -= 1 if @health > 0
