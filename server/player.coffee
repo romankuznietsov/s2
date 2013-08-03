@@ -6,6 +6,7 @@ class Player
   acceleration: 0.02
   topSpeed: 2
   turnSpeed: 1
+  inertia: 35
   shotCooldown: 20
   maxHealth: 3
   radius: 10
@@ -26,6 +27,7 @@ class Player
     @brake() if @keys.down
     @turnLeft() if @keys.left
     @turnRight() if @keys.right
+    @updateRealDirection()
     @move()
     @cooldown -= 1 if @cooldown > 0
     @shoot() if @keys.fire and @cooldown is 0
@@ -39,6 +41,14 @@ class Player
     @position.x += @limits.width if @position.x < 0
     @position.y += @limits.height if @position.y < 0
 
+  updateRealDirection: ->
+    diff = @direction - @realDirection
+    diff -= 360 if diff > 180
+    diff += 360 if diff < -180
+    @realDirection += diff / @inertia
+    @realDirection += 360 if @realDirection < 0
+    @realDirection -= 360 if @realDirection >= 360
+
   respawn: ->
     @reset()
     @setRandomPosition()
@@ -48,6 +58,7 @@ class Player
     @cooldown = 0
     @speed = 0
     @direction = 0
+    @realDirection = 0
 
   setRandomPosition: ->
     @position =
@@ -55,7 +66,7 @@ class Player
       y: @limits.height * Math.random()
 
   directionRad: ->
-    utils.degToRad(@direction)
+    utils.degToRad(@realDirection)
 
   accelerate: ->
     @speed += @acceleration
@@ -67,11 +78,11 @@ class Player
 
   turnLeft: ->
     @direction -= @turnSpeed
-    @direction = 360 if @direction < 0
+    @direction += 360 if @direction < 0
 
   turnRight: ->
     @direction += @turnSpeed
-    @direction = 0 if @direction > 360
+    @direction -= 360 if @direction >= 360
 
   serialize: ->
     position: @position
