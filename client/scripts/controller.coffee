@@ -8,8 +8,17 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
     connect: ->
       @socket = SocketIo.connect window.location.origin,
         query: 'role=controller'
-      @socket.on 'connected', @connected
+      @socket.on 'ships', @showShips
+      @socket.on 'join', @join
       @socket.on 'disconnect', @disconnect
+
+    showShips: (ships) =>
+      list = $('#ship-select')
+      for name, props of ships
+        $('<a href="">').html(name).appendTo(list)
+      list.delegate 'a', 'touchend', (e) =>
+        @socket.emit 'selectShip', e.target.innerHTML
+        false
 
     setIndicatorColor: (color) ->
       $('.color-indicator').css('background-color', color || 'transparent')
@@ -17,7 +26,9 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
     setInfoText: (text) ->
       $('.info').html(text || '')
 
-    connected: (color) =>
+    join: (color) =>
+      $('#ship-select').hide()
+      $('#controller').show()
       @keySending = setInterval(@sendKeys, @sendInterval)
       @setInfoText()
       @setIndicatorColor(color)

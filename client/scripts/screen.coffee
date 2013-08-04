@@ -33,7 +33,7 @@ require ['drawer', '../socket.io-client/dist/socket.io.min'], (Drawer, SocketIo)
     redraw: =>
       @drawer.clear()
       for player in @players
-        @drawer.drawPlayer(player)
+        @drawer.drawPlayer(player) if player
       for shot in @shots
         @drawer.drawShot(shot)
 

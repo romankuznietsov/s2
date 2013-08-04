@@ -1,6 +1,26 @@
 key-color = #08f
 fire-key-color = #f44
 
+#controller
+  display: none
+
+#ship-select
+  text-align center
+  color key-color
+  font-family sans-serif
+  a
+    color inherit
+    text-align center
+    text-decoration none
+    width 100px
+    display: inline-block
+    margin 4px 2px
+    padding 8px
+    border 3px solid key-color
+    border-radius 10px
+    &:hover
+      background-color #444
+
 body
   background black
 
@@ -12,7 +32,6 @@ body
   height 10%
 
   font-family sans-serif
-  /*font-size 32px*/
   text-align center
   color key-color
   text-shadow 0 0 10px key-color
@@ -27,6 +46,8 @@ body
   background-position center
   background-repeat no-repeat
   background-size 50%
+  box-sizing border-box
+  -moz-box-sizing border-box
 
 .key.active
   background-color #444

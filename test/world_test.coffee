@@ -13,7 +13,7 @@ describe 'World', ->
     world.limits.height.should.equal 50
 
   it 'should add a player', ->
-    {status, id, color} = world.join()
+    {status, id, color} = world.addPlayer()
     world.players.should.have.property id
     world.colors.length.should.equal 7
 
@@ -30,7 +30,8 @@ describe 'World', ->
     data.shots.should.be.instanceof Array
 
   it 'should have shots if a player shoots', ->
-    {status, id, color} = world.join()
+    {status, id, color} = world.addPlayer()
+    world.join(id, {})
     world.updatePlayersKeys(id, fire: true)
     world.update()
     world.shots.should.not.be.empty

@@ -3,7 +3,7 @@ utils = require './utils'
 exports.Shot =
 class Shot
   lifeLength: 200
-  scalarSpeed: 3
+  scalarSpeed: 5
 
   constructor: (params) ->
     {@emitter, @position, @limits, direction} = params

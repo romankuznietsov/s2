@@ -7,12 +7,15 @@ html(lang='en')
     script(type='text/javascript', src='requirejs/require.js', data-main='scripts/controller')
     meta(name='viewport', content='width=device-width')
   body
-    .info Connecting...
-    .color-indicator
-    .direction-keys
-      .key.left-key(action='left')
-      .key.right-key(action='right')
-    .fire-and-speed-keys
-      .key.fire-key(action='fire')
-      .key.up-key(action='up')
-      .key.down-key(action='down')
+    #ship-select
+      p Select ship type
+    #controller
+      .info Connecting...
+      .color-indicator
+      .direction-keys
+        .key.left-key(action='left')
+        .key.right-key(action='right')
+      .fire-and-speed-keys
+        .key.fire-key(action='fire')
+        .key.up-key(action='up')
+        .key.down-key(action='down')

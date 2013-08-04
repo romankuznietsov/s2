@@ -11,6 +11,7 @@ describe 'Player', ->
       width: 100, height: 100
     emitter: emitter
     color: '#fff'
+  player.join()
 
   it 'should update be controlled by keys', ->
     player.updateKeys up: true, left: true

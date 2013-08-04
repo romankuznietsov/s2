@@ -3,6 +3,8 @@ utils = require './utils'
 
 exports.Player =
 class Player
+  joined: false
+
   acceleration: 0.02
   topSpeed: 2
   turnSpeed: 1
@@ -16,8 +18,6 @@ class Player
     @keys = {}
     @reset()
     @setRandomPosition()
-    @emitter.on 'update', @update
-    @emitter.on 'shotMoved', @checkHit
 
   updateKeys: (keys) ->
     @keys = keys
@@ -34,8 +34,8 @@ class Player
     @respawn() if @dead()
 
   move: ->
-    @position.x += Math.cos(@directionRad()) * @speed
-    @position.y += Math.sin(@directionRad()) * @speed
+    @position.x += Math.cos(@realDirectionRad()) * @speed
+    @position.y += Math.sin(@realDirectionRad()) * @speed
     @position.x -= @limits.width if @position.x > @limits.width
     @position.y -= @limits.height if @position.y > @limits.height
     @position.x += @limits.width if @position.x < 0
@@ -65,8 +65,11 @@ class Player
       x: @limits.width * Math.random()
       y: @limits.height * Math.random()
 
-  directionRad: ->
+  realDirectionRad: ->
     utils.degToRad(@realDirection)
+
+  directionRad: ->
+    utils.degToRad(@direction)
 
   accelerate: ->
     @speed += @acceleration
@@ -85,10 +88,13 @@ class Player
     @direction -= 360 if @direction >= 360
 
   serialize: ->
-    position: @position
-    direction: @direction
-    health: @health / @maxHealth
-    color: @color
+    @joined and {
+      radius: @radius
+      position: @position
+      direction: @direction
+      health: @health / @maxHealth
+      color: @color
+    }
 
   shoot: ->
     @cooldown = @shotCooldown
@@ -115,3 +121,12 @@ class Player
   removeListeners: ->
     @emitter.removeListener 'update', @update
     @emitter.removeListener 'shotMoved', @checkHit
+
+  setShip: (ship) ->
+    for key, value of ship
+      @[key] = value
+
+  join: ->
+    @emitter.on 'update', @update
+    @emitter.on 'shotMoved', @checkHit
+    @joined = true

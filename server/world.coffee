@@ -1,5 +1,6 @@
-{Player} = require './player'
 {EventEmitter} = require 'events'
+{Player} = require './player'
+ships = require './ships'
 
 exports.World =
 class World
@@ -19,7 +20,7 @@ class World
     @emitter.on 'shots', @addShots
     setInterval(@update, @updatePeriod)
 
-  join: ->
+  addPlayer: ->
     return {status: 'rejected'} if @playerLimitReached()
     player = new Player
       limits: @limits
@@ -48,6 +49,14 @@ class World
 
   addShots: (shots) =>
     @shots = @shots.concat shots
+
+  ships: ->
+    ships
+
+  join: (id, ship) ->
+    @players[id].setShip(ships[ship])
+    @players[id].join()
+    false
 
   serialize: () ->
     players = []
