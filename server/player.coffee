@@ -16,8 +16,6 @@ class Player
   constructor: (params) ->
     {@limits, @color, @emitter} = params
     @keys = {}
-    @reset()
-    @setRandomPosition()
 
   updateKeys: (keys) ->
     @keys = keys
@@ -129,4 +127,6 @@ class Player
   join: ->
     @emitter.on 'update', @update
     @emitter.on 'shotMoved', @checkHit
+    @reset()
+    @setRandomPosition()
     @joined = true
