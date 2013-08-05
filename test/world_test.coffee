@@ -38,6 +38,6 @@ describe 'World', ->
 
   it 'should remove dead shots', ->
     for shot in world.shots
-      shot.hitShip()
+      shot.life = 0
     world.update()
     world.shots.should.be.empty

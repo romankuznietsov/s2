@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =
   light:
     acceleration: 0.03
     topSpeed: 3
@@ -23,4 +23,3 @@ module.exports = {
     shotCooldown: 20
     maxHealth: 5
     radius: 18
-}

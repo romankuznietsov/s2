@@ -4,6 +4,7 @@ utils = require './utils'
 exports.Player =
 class Player
   joined: false
+  score: 0
 
   acceleration: 0.02
   topSpeed: 2
@@ -30,6 +31,7 @@ class Player
     @cooldown -= 1 if @cooldown > 0
     @shoot() if @keys.fire and @cooldown is 0
     @respawn() if @dead()
+    @emitter.emit 'playerMoved', @
 
   move: ->
     @position.x += Math.cos(@realDirectionRad()) * @speed
@@ -92,6 +94,7 @@ class Player
       direction: @direction
       health: @health / @maxHealth
       color: @color
+      score: @score
     }
 
   shoot: ->
@@ -103,22 +106,21 @@ class Player
         y: @position.y + Math.sin(@directionRad()) * @radius * 1.1
       direction: @direction
       limits: @limits
+      player: @
     @emitter.emit 'shots', [shot]
 
   dead: ->
     @health <= 0
 
-  hit: ->
-    @health -= 1 if @health > 0
-
-  checkHit: (shot) =>
-    if utils.distance(@position, shot.position) < @radius
-      @hit()
-      shot.hitShip()
+  hit: (damage) ->
+    if @dead()
+      false
+    else
+      @health -= damage
+      @dead()
 
   removeListeners: ->
     @emitter.removeListener 'update', @update
-    @emitter.removeListener 'shotMoved', @checkHit
 
   setShip: (ship) ->
     for key, value of ship
@@ -126,7 +128,12 @@ class Player
 
   join: ->
     @emitter.on 'update', @update
-    @emitter.on 'shotMoved', @checkHit
     @reset()
     @setRandomPosition()
     @joined = true
+
+  frag: ->
+    @score += 1
+
+  autoFrag: ->
+    @score -= 1
