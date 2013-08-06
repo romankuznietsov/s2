@@ -42,3 +42,39 @@ define ->
         x: shot.position.x
         y: shot.position.y
         radius: 2
+
+    setStatusBarParams: (params) ->
+      @statusBarParams = params
+      @statusBarParams.iconRadius = params.height / 3
+      @statusBarParams.fontSize = params.height / 1.5
+      @statusBarParams.offset = @statusBarParams.fontSize * 4
+
+    statusBar: (players) ->
+      return unless @statusBarParams
+      @canvas.drawRect
+        x: @statusBarParams.x, y: @statusBarParams.y
+        fromCenter: false
+        height: @statusBarParams.height
+        width: @statusBarParams.width
+        fillStyle: 'black'
+        strokeStyle: 'rgb(0, 160, 255)'
+
+      @canvas.translateCanvas
+        translateX: @statusBarParams.fontSize, translateY: @statusBarParams.y + @statusBarParams.height / 2
+
+      for i in [ 0...players.length ]
+        @canvas.drawArc
+          x: @statusBarParams.offset * i
+          y: 0
+          radius: @statusBarParams.iconRadius
+          fillStyle: players[i].color
+        @canvas.drawText
+          strokeStyle: 'white'
+          fillStyle: 'white'
+          x: @statusBarParams.height + @statusBarParams.offset * i
+          y: 0
+          fontSize: @statusBarParams.fontSize
+          fontFamily: 'sans-serif'
+          text: players[i].score
+
+      @canvas.restoreCanvas()

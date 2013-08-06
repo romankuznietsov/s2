@@ -1,6 +1,7 @@
 require ['drawer', '../socket.io-client/dist/socket.io.min'], (Drawer, SocketIo) ->
   class Screen
     redrawPeriod: 32
+    statusBarHeight: 30
 
     constructor: ->
       @players = []
@@ -20,6 +21,12 @@ require ['drawer', '../socket.io-client/dist/socket.io.min'], (Drawer, SocketIo)
 
     setLimits: (data) =>
       {@width, @height} = data
+      @drawer.setStatusBarParams
+        x: 0, y: @height
+        width: @width
+        height: @statusBarHeight
+
+      @height += @statusBarHeight
       @canvas.attr 'width', @width
       @canvas.attr 'height', @height
       @fitCanvas()
@@ -36,6 +43,7 @@ require ['drawer', '../socket.io-client/dist/socket.io.min'], (Drawer, SocketIo)
         @drawer.drawPlayer(player) if player
       for shot in @shots
         @drawer.drawShot(shot)
+      @drawer.statusBar(@players)
 
     fitCanvas: =>
       ratio = @width / @height

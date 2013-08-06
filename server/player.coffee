@@ -102,8 +102,8 @@ class Player
     shot = new Shot
       emitter: @emitter
       position:
-        x: @position.x + Math.cos(@directionRad()) * @radius * 1.1
-        y: @position.y + Math.sin(@directionRad()) * @radius * 1.1
+        x: @position.x + Math.cos(@directionRad()) * @radius
+        y: @position.y + Math.sin(@directionRad()) * @radius
       direction: @direction
       limits: @limits
       player: @

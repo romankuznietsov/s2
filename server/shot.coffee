@@ -3,6 +3,7 @@ utils = require './utils'
 exports.Shot =
 class Shot
   lifeLength: 200
+  noSelfHarmLife: 180
   scalarSpeed: 5
   damage: 1
 
@@ -31,6 +32,7 @@ class Shot
     @life <= 0
 
   hit: (player) ->
+    return if player is @player && @life > @noSelfHarmLife
     @life = 0
     if player.hit(@damage)
       if @player isnt player
