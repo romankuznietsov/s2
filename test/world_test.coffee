@@ -32,7 +32,7 @@ describe 'World', ->
   it 'should have shots if a player shoots', ->
     {status, id, color} = world.addPlayer()
     world.join(id, {})
-    world.updatePlayersKeys(id, fire: true)
+    world.setPlayersKeys(id, fire: true)
     world.update()
     world.shots.should.not.be.empty
 

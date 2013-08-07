@@ -45,7 +45,7 @@ class Server
         socket.emit 'join', color
 
       socket.on 'keys', (data) =>
-        @world.updatePlayersKeys(id, data)
+        @world.setPlayersKeys(id, data)
 
       socket.on 'disconnect', =>
         @world.removePlayer(id)

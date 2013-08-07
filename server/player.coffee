@@ -3,8 +3,49 @@ utils = require './utils'
 
 exports.Player =
 class Player
+  constructor: (params) ->
+    {@limits, @color, @emitter} = params
+
+  setKeys: (keys) ->
+    @keys = keys
+
+  join: (ship) ->
+    for key, value of ship
+      @[key] = value
+    @emitter.on 'update', @update
+    @respawn()
+    @joined = true
+
+  disconnect: ->
+    @removeListeners()
+    @color
+
+  hit: (player, damage) ->
+    @health -= damage
+    if @health <= 0
+      @respawn()
+      if player is @
+        @score -= 1
+      else
+        player.score += 1
+
+  collidesWith: (point) ->
+    utils.distance(point, @position) < @radius
+
+  serialize: ->
+    radius: @radius
+    position: @position
+    direction: @direction
+    health: @health / @maxHealth
+    color: @color
+    score: @score
+
   joined: false
   score: 0
+
+  # private
+
+  keys: {}
 
   acceleration: 0.02
   topSpeed: 2
@@ -14,59 +55,45 @@ class Player
   maxHealth: 3
   radius: 10
 
-  constructor: (params) ->
-    {@limits, @color, @emitter} = params
-    @keys = {}
-
-  updateKeys: (keys) ->
-    @keys = keys
-
   update: =>
     @accelerate() if @keys.up
     @brake() if @keys.down
     @turnLeft() if @keys.left
     @turnRight() if @keys.right
-    @updateRealDirection()
+    @updateMovementDirection()
     @move()
     @cooldown -= 1 if @cooldown > 0
     @shoot() if @keys.fire and @cooldown is 0
-    @respawn() if @dead()
     @emitter.emit 'playerMoved', @
 
   move: ->
-    @position.x += Math.cos(@realDirectionRad()) * @speed
-    @position.y += Math.sin(@realDirectionRad()) * @speed
+    @position.x += Math.cos(@movementDirectionRad()) * @speed
+    @position.y += Math.sin(@movementDirectionRad()) * @speed
     @position.x -= @limits.width if @position.x > @limits.width
     @position.y -= @limits.height if @position.y > @limits.height
     @position.x += @limits.width if @position.x < 0
     @position.y += @limits.height if @position.y < 0
 
-  updateRealDirection: ->
-    diff = @direction - @realDirection
+  updateMovementDirection: ->
+    diff = @direction - @movementDirection
     diff -= 360 if diff > 180
     diff += 360 if diff < -180
-    @realDirection += diff / @inertia
-    @realDirection += 360 if @realDirection < 0
-    @realDirection -= 360 if @realDirection >= 360
+    @movementDirection += diff / @inertia
+    @movementDirection += 360 if @movementDirection < 0
+    @movementDirection -= 360 if @movementDirection >= 360
 
   respawn: ->
-    @reset()
-    @setRandomPosition()
-
-  reset: ->
     @health = @maxHealth
     @cooldown = 0
     @speed = 0
     @direction = 0
-    @realDirection = 0
-
-  setRandomPosition: ->
+    @movementDirection = 0
     @position =
       x: @limits.width * Math.random()
       y: @limits.height * Math.random()
 
-  realDirectionRad: ->
-    utils.degToRad(@realDirection)
+  movementDirectionRad: ->
+    utils.degToRad(@movementDirection)
 
   directionRad: ->
     utils.degToRad(@direction)
@@ -87,16 +114,6 @@ class Player
     @direction += @turnSpeed
     @direction -= 360 if @direction >= 360
 
-  serialize: ->
-    @joined and {
-      radius: @radius
-      position: @position
-      direction: @direction
-      health: @health / @maxHealth
-      color: @color
-      score: @score
-    }
-
   shoot: ->
     @cooldown = @shotCooldown
     shot = new Shot
@@ -106,34 +123,8 @@ class Player
         y: @position.y + Math.sin(@directionRad()) * @radius
       direction: @direction
       limits: @limits
-      player: @
+      shooter: @
     @emitter.emit 'shots', [shot]
-
-  dead: ->
-    @health <= 0
-
-  hit: (damage) ->
-    if @dead()
-      false
-    else
-      @health -= damage
-      @dead()
 
   removeListeners: ->
     @emitter.removeListener 'update', @update
-
-  setShip: (ship) ->
-    for key, value of ship
-      @[key] = value
-
-  join: ->
-    @emitter.on 'update', @update
-    @reset()
-    @setRandomPosition()
-    @joined = true
-
-  frag: ->
-    @score += 1
-
-  autoFrag: ->
-    @score -= 1

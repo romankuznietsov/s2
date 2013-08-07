@@ -31,21 +31,18 @@ class World
     return status: 'connected', id: @lastPlayerId, color: player.color
 
   removePlayer: (id) ->
-    @colors.push @players[id].color
-    @players[id].removeListeners()
+    @colors.push @players[id].disconnect()
     delete @players[id]
 
-  updatePlayersKeys: (id, keys) ->
-    @players[id].updateKeys keys
+  setPlayersKeys: (id, keys) ->
+    @players[id].setKeys keys
 
   playerLimitReached: ->
     @colors.length == 0
 
   update: =>
     @emitter.emit 'update'
-    for shot in @shots.filter((shot)->shot.dead())
-      shot.removeListeners()
-    @shots = @shots.filter((shot)->!shot.dead())
+    @shots = @shots.filter((shot)->shot.alive())
 
   addShots: (shots) =>
     @shots = @shots.concat shots
@@ -54,13 +51,11 @@ class World
     ships
 
   join: (id, ship) ->
-    @players[id].setShip(ships[ship])
-    @players[id].join()
-    false
+    @players[id].join(ships[ship])
 
   serialize: () ->
     players = []
     for id, player of @players
-      players.push player.serialize()
+      players.push player.serialize() if player.joined
     shots = @shots.map (shot) -> shot.serialize()
     return {players: players, shots: shots}

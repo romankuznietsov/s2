@@ -15,7 +15,7 @@ describe 'Player', ->
   player.join()
 
   it 'should update and be controlled by keys', ->
-    player.updateKeys up: true, left: true
+    player.setKeys up: true, left: true
     emitter.emit 'update'
     player.speed.should.be.greaterThan 0
     player.direction.should.not.equal 0
@@ -31,7 +31,7 @@ describe 'Player', ->
       data.should.have.property attr
 
   it 'should generate shots', (done) ->
-    player.updateKeys fire: true
+    player.setKeys fire: true
     emitter.once 'shots', -> done()
     emitter.emit 'update'
 
@@ -41,14 +41,11 @@ describe 'Player', ->
     player.cooldown.should.be.lessThan player.shotCooldown
 
   it 'should loose health when hit', ->
-    player.hit(1).should.equal false
+    player.hit(player, 1)
     player.health.should.be.lessThan player.maxHealth
 
-  it 'should return true on hit() if killed by a shot', ->
-    player.hit(player.maxHealth).should.equal true
-
   it 'should reset on respawn', ->
-    emitter.emit 'update'
+    player.hit(player, player.maxHealth)
     player.health.should.equal player.maxHealth
     player.cooldown.should.equal 0
     player.speed.should.equal 0
