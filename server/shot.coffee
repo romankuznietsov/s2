@@ -20,6 +20,7 @@ class Shot
     @life > 0
 
   update: =>
+    @life -= 1
     @move()
 
   destroy: ->

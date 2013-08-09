@@ -1,4 +1,3 @@
-{EventEmitter} = require 'events'
 {Player} = require './player'
 ships = require './ships'
 
@@ -12,27 +11,25 @@ class World
 
   constructor: (params) ->
     {@limits} = params
-    @emitter = new EventEmitter
-    @emitter.setMaxListeners(1000)
     @players = {}
+    @pendingPlayers = {}
     @lastPlayerId = 0
     @shots = []
-    @emitter.on 'shots', @addShots
     setInterval(@update, @updatePeriod)
 
   addPlayer: ->
     return {status: 'rejected'} if @playerLimitReached()
-    player = new Player
-      limits: @limits
-      color: @colors.pop()
-      emitter: @emitter
     @lastPlayerId += 1
-    @players[@lastPlayerId] = player
-    return status: 'connected', id: @lastPlayerId, color: player.color
+    @pendingPlayers[@lastPlayerId] = @colors.pop()
+    return status: 'connected', id: @lastPlayerId
 
   removePlayer: (id) ->
-    @colors.push @players[id].disconnect()
-    delete @players[id]
+    if @pendingPlayers[id]
+      @colors.push @pendingPlayers[id]
+      delete @pendingPlayers[id]
+    else
+      @colors.push @players[id].color
+      delete @players[id]
 
   setPlayersKeys: (id, keys) ->
     @players[id].setKeys keys
@@ -41,21 +38,32 @@ class World
     @colors.length == 0
 
   update: =>
-    @emitter.emit 'update'
-    @shots = @shots.filter((shot)->shot.alive())
+    for _, player of @players
+      player.update()
+      @shots = @shots.concat(player.getShots())
 
-  addShots: (shots) =>
-    @shots = @shots.concat shots
+    for shot in @shots
+      shot.update()
+      for _, player of @players
+        break if player.checkHit(shot)
+
+    @shots = @shots.filter((shot)->shot.alive())
 
   ships: ->
     ships
 
-  join: (id, ship) ->
-    @players[id].join(ships[ship])
+  join: (id, shipName) ->
+    color = @pendingPlayers[id]
+    @players[id] = new Player
+      color: color
+      limits: @limits
+      ship: ships[shipName]
+    delete @pendingPlayers[id]
+    return color
 
   serialize: () ->
     players = []
     for id, player of @players
-      players.push player.serialize() if player.joined
+      players.push player.serialize()
     shots = @shots.map (shot) -> shot.serialize()
     return {players: players, shots: shots}

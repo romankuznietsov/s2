@@ -24,36 +24,33 @@ class Server
   screen: (socket) ->
     screenId = @lastScreenId
     @lastScreenId += 1
-    console.log "[*] Screen #{screenId} connected. Using #{socket.transport}."
+
     socket.emit 'limits', @world.limits
+
     update = =>
       socket.emit 'update', @world.serialize()
+
     @screens[screenId] = setInterval(update, @updateInterval)
+
     socket.on 'disconnect', =>
       clearInterval @screens[screenId]
       delete @screens[screenId]
-      console.log "[*] Screen #{screenId} disconnected."
 
   controller: (socket) ->
-    {status, id, color} = @world.addPlayer()
-    if status is 'connected'
-      console.log "[*] Controller #{id} connected. Using #{socket.transport}."
+    {status, id} = @world.addPlayer()
 
+    if status is 'connected'
       socket.on 'selectShip', (ship) =>
-        console.log "[*] Controller #{id} selected ship #{ship}"
-        @world.join(id, ship)
+        color = @world.join(id, ship)
         socket.emit 'join', color
 
-      socket.on 'keys', (data) =>
-        @world.setPlayersKeys(id, data)
+      socket.on 'keys', (keys) =>
+        @world.setPlayersKeys(id, keys)
 
       socket.on 'disconnect', =>
         @world.removePlayer(id)
-        console.log "[*] Controller #{id} disconnected."
 
       socket.emit 'ships', @world.ships()
 
     else
-      console.log '[*] Connection rejected. Room if full.'
-      socket.disconnect('Room is full')
-      return
+      socket.disconnect()
