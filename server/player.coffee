@@ -1,5 +1,9 @@
 {Shot} = require './shot'
-utils = require './utils'
+
+distance = (p1, p2) ->
+  Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
+pi = Math.PI
+twoPi = pi * 2
 
 exports.Player =
 class Player
@@ -18,7 +22,7 @@ class Player
   serialize: ->
     radius: @radius
     position: @position
-    direction: @direction
+    direction: @direction / pi * 180
     health: @health / @maxHealth
     color: @color
     score: @score
@@ -33,8 +37,8 @@ class Player
     @cooldown -= 1 if @cooldown > 0
 
   move: ->
-    @position.x += Math.cos(@movementDirectionRad()) * @speed
-    @position.y += Math.sin(@movementDirectionRad()) * @speed
+    @position.x += Math.cos(@movementDirection) * @speed
+    @position.y += Math.sin(@movementDirection) * @speed
     @position.x -= @limits.width if @position.x > @limits.width
     @position.y -= @limits.height if @position.y > @limits.height
     @position.x += @limits.width if @position.x < 0
@@ -42,11 +46,11 @@ class Player
 
   updateMovementDirection: ->
     diff = @direction - @movementDirection
-    diff -= 360 if diff > 180
-    diff += 360 if diff < -180
+    diff -= twoPi if diff > pi
+    diff += twoPi if diff < -pi
     @movementDirection += diff / @inertia
-    @movementDirection += 360 if @movementDirection < 0
-    @movementDirection -= 360 if @movementDirection >= 360
+    @movementDirection += twoPi if @movementDirection < 0
+    @movementDirection -= twoPi if @movementDirection >= twoPi
 
   respawn: ->
     @health = @maxHealth
@@ -58,12 +62,6 @@ class Player
       x: @limits.width * Math.random()
       y: @limits.height * Math.random()
 
-  movementDirectionRad: ->
-    utils.degToRad(@movementDirection)
-
-  directionRad: ->
-    utils.degToRad(@direction)
-
   accelerate: ->
     @speed += @acceleration
     @speed = @topSpeed if @speed > @topSpeed
@@ -74,19 +72,19 @@ class Player
 
   turnLeft: ->
     @direction -= @turnSpeed
-    @direction += 360 if @direction < 0
+    @direction += twoPi if @direction < 0
 
   turnRight: ->
     @direction += @turnSpeed
-    @direction -= 360 if @direction >= 360
+    @direction -= twoPi if @direction >= twoPi
 
   getShots: ->
     if @cooldown is 0 && @keys.fire
       @cooldown = @shotCooldown
       shot = new Shot
         position:
-          x: @position.x + Math.cos(@directionRad()) * @radius
-          y: @position.y + Math.sin(@directionRad()) * @radius
+          x: @position.x + Math.cos(@direction) * @radius
+          y: @position.y + Math.sin(@direction) * @radius
         direction: @direction
         limits: @limits
         shooter: @
@@ -95,7 +93,7 @@ class Player
       []
 
   checkHit: (shot) ->
-    if utils.distance(shot.position, @position) < @radius
+    if distance(shot.position, @position) < @radius
       @health -= shot.damage
       shot.destroy()
       if @health <= 0

@@ -1,5 +1,3 @@
-utils = require './utils'
-
 exports.Shot =
 class Shot
   lifeLength: 200
@@ -9,8 +7,8 @@ class Shot
   constructor: (params) ->
     {@shooter, @position, @limits, direction} = params
     @speed =
-      x: Math.cos(utils.degToRad(direction)) * @scalarSpeed
-      y: Math.sin(utils.degToRad(direction)) * @scalarSpeed
+      x: Math.cos(direction) * @scalarSpeed
+      y: Math.sin(direction) * @scalarSpeed
     @life = @lifeLength
 
   serialize: ->
