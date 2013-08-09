@@ -1,52 +1,64 @@
 require('chai').should()
 {Player} = require '../server/player'
 {Shot} = require '../server/shot'
-{EventEmitter} = require 'events'
+ships = require '../server/ships'
 
 describe 'Player', ->
-  emitter = new EventEmitter
+  ship = ships['light']
 
   player = new Player
     limits:
       width: 100, height: 100
-    emitter: emitter
     color: '#fff'
+    ship: ship
 
-  player.join()
+  otherPlayer = new Player
+    limits:
+      width: 100, height: 100
+    color: '#fff'
+    ship: ship
 
-  it 'should update and be controlled by keys', ->
-    player.setKeys up: true, left: true
-    emitter.emit 'update'
-    player.speed.should.be.greaterThan 0
-    player.direction.should.not.equal 0
-
-  it 'should update position', ->
-    {x, y} = player.position
-    emitter.emit 'update'
-    player.position.should.not.equal {x, y}
+  createShot = (opts) ->
+    {shooter, target} = opts
+    new Shot
+      position: target.position
+      shooter: shooter
 
   it 'should serialize', ->
     data = player.serialize()
-    for attr in ['position', 'direction', 'health', 'color', 'score']
+    for attr in ['position', 'direction', 'health', 'color', 'score', 'radius']
       data.should.have.property attr
 
-  it 'should generate shots', (done) ->
+  it 'should move if keys are pressed', ->
+    before = player.serialize()
+    player.setKeys up: true, left: true
+    player.update()
+    before.should.not.equal player.serialize()
+
+  it 'should shoot', ->
     player.setKeys fire: true
-    emitter.once 'shots', -> done()
-    emitter.emit 'update'
+    shots = player.getShots()
+    shots.length.should.be.greaterThan 0
+    shots[0].shooter.should.equal player
 
   it 'should have a cooldown', ->
-    emitter.emit 'update'
-    player.cooldown.should.be.greaterThan 0
-    player.cooldown.should.be.lessThan player.shotCooldown
+    player.getShots().length.should.equal 0
 
-  it 'should loose health when hit', ->
-    player.hit(player, 1)
-    player.health.should.be.lessThan player.maxHealth
+  it 'should loose health when hit and destroy the shot', ->
+    shot = createShot(shooter: otherPlayer, target: player)
+    player.checkHit(shot).should.equal true
+    shot.alive().should.equal false
+    player.serialize().health.should.be.lessThan 1
 
-  it 'should reset on respawn', ->
-    player.hit(player, player.maxHealth)
-    player.health.should.equal player.maxHealth
-    player.cooldown.should.equal 0
-    player.speed.should.equal 0
-    player.direction.should.equal 0
+  it 'should respawn when killed', ->
+    shot = createShot(shooter: otherPlayer, target: player)
+    player.checkHit(shot).should.equal true
+    player.serialize().health.should.be.equal 1
+
+  it 'should increase score', ->
+    otherPlayer.serialize().score.should.equal 1
+
+  it 'should decrease score on autokill', ->
+    player.checkHit(createShot(shooter: player, target: player))
+    player.checkHit(createShot(shooter: player, target: player))
+    player.serialize().score.should.equal -1

@@ -3,34 +3,17 @@ utils = require './utils'
 
 exports.Player =
 class Player
+  score: 0
+  keys: {}
+
   constructor: (params) ->
-    {@limits, @color, @emitter} = params
+    {ship, @limits, @color} = params
+    for key, value of ship
+      @[key] = value
+    @respawn()
 
   setKeys: (keys) ->
     @keys = keys
-
-  join: (ship) ->
-    for key, value of ship
-      @[key] = value
-    @emitter.on 'update', @update
-    @respawn()
-    @joined = true
-
-  disconnect: ->
-    @removeListeners()
-    @color
-
-  hit: (player, damage) ->
-    @health -= damage
-    if @health <= 0
-      @respawn()
-      if player is @
-        @score -= 1
-      else
-        player.score += 1
-
-  collidesWith: (point) ->
-    utils.distance(point, @position) < @radius
 
   serialize: ->
     radius: @radius
@@ -40,21 +23,6 @@ class Player
     color: @color
     score: @score
 
-  joined: false
-  score: 0
-
-  # private
-
-  keys: {}
-
-  acceleration: 0.02
-  topSpeed: 2
-  turnSpeed: 1
-  inertia: 35
-  shotCooldown: 20
-  maxHealth: 3
-  radius: 10
-
   update: =>
     @accelerate() if @keys.up
     @brake() if @keys.down
@@ -63,8 +31,6 @@ class Player
     @updateMovementDirection()
     @move()
     @cooldown -= 1 if @cooldown > 0
-    @shoot() if @keys.fire and @cooldown is 0
-    @emitter.emit 'playerMoved', @
 
   move: ->
     @position.x += Math.cos(@movementDirectionRad()) * @speed
@@ -114,17 +80,36 @@ class Player
     @direction += @turnSpeed
     @direction -= 360 if @direction >= 360
 
-  shoot: ->
-    @cooldown = @shotCooldown
-    shot = new Shot
-      emitter: @emitter
-      position:
-        x: @position.x + Math.cos(@directionRad()) * @radius
-        y: @position.y + Math.sin(@directionRad()) * @radius
-      direction: @direction
-      limits: @limits
-      shooter: @
-    @emitter.emit 'shots', [shot]
+  getShots: ->
+    if @cooldown is 0 && @keys.fire
+      @cooldown = @shotCooldown
+      shot = new Shot
+        position:
+          x: @position.x + Math.cos(@directionRad()) * @radius
+          y: @position.y + Math.sin(@directionRad()) * @radius
+        direction: @direction
+        limits: @limits
+        shooter: @
+      [shot]
+    else
+      []
 
-  removeListeners: ->
-    @emitter.removeListener 'update', @update
+  checkHit: (shot) ->
+    if utils.distance(shot.position, @position) < @radius
+      @health -= shot.damage
+      shot.destroy()
+      if @health <= 0
+        @respawn()
+        if shot.shooter isnt @
+          shot.shooter.frag()
+        else
+          @autoFrag()
+      return true
+    else
+      return false
+
+  frag: ->
+    @score += 1
+
+  autoFrag: ->
+    @score -= 1
