@@ -1,6 +1,6 @@
 require('chai').should()
 {Player} = require '../server/player'
-{Shot} = require '../server/shot'
+{Projectile} = require '../server/projectile'
 ships = require '../server/ships'
 
 describe 'Player', ->
@@ -18,11 +18,13 @@ describe 'Player', ->
     color: '#fff'
     ship: ship
 
-  createShot = (opts) ->
+  createProjectile = (opts) ->
     {shooter, target} = opts
-    new Shot
-      position: target.position
-      shooter: shooter
+    new Projectile(
+      {speed: 1, damage: 1, life: 3},
+      {shooter: shooter, position: target.position, limits: {width: 100, height: 100}},
+      direction: 1
+    )
 
   it 'should serialize', ->
     data = player.serialize()
@@ -37,28 +39,25 @@ describe 'Player', ->
 
   it 'should shoot', ->
     player.setKeys fire: true
-    shots = player.getShots()
-    shots.length.should.be.greaterThan 0
-    shots[0].shooter.should.equal player
+    projectiles = player.getProjectiles()
+    projectiles.length.should.be.greaterThan 0
+    projectiles[0].shooter.should.equal player
 
-  it 'should have a cooldown', ->
-    player.getShots().length.should.equal 0
-
-  it 'should loose health when hit and destroy the shot', ->
-    shot = createShot(shooter: otherPlayer, target: player)
-    player.checkHit(shot).should.equal true
-    shot.alive().should.equal false
+  it 'should loose health when hit and destroy the projectile', ->
+    projectile = createProjectile(shooter: otherPlayer, target: player)
+    player.checkHit(projectile).should.equal true
+    projectile.alive().should.equal false
     player.serialize().health.should.be.lessThan 1
 
   it 'should respawn when killed', ->
-    shot = createShot(shooter: otherPlayer, target: player)
-    player.checkHit(shot).should.equal true
+    projectile = createProjectile(shooter: otherPlayer, target: player)
+    player.checkHit(projectile).should.equal true
     player.serialize().health.should.be.equal 1
 
   it 'should increase score', ->
     otherPlayer.serialize().score.should.equal 1
 
   it 'should decrease score on autokill', ->
-    player.checkHit(createShot(shooter: player, target: player))
-    player.checkHit(createShot(shooter: player, target: player))
+    player.checkHit(createProjectile(shooter: player, target: player))
+    player.checkHit(createProjectile(shooter: player, target: player))
     player.serialize().score.should.equal -1

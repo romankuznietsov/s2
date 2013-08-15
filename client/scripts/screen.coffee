@@ -10,7 +10,7 @@ define ->
       padding: 30
       y: 0
     players: []
-    shots: []
+    projectiles: []
 
     constructor: ->
       @canvas = $(@canvasSelector)
@@ -18,14 +18,14 @@ define ->
       setInterval(@redraw, @redrawPeriod)
 
     update: (data) =>
-      {@players, @shots} = data
+      {@players, @projectiles} = data
 
     redraw: =>
       @canvas.clearCanvas fillStyle: 'black'
       for player in @players
-        @drawPlayer(player) if player # FIXME
-      for shot in @shots
-        @drawShot(shot)
+        @drawPlayer(player)
+      for projectile in @projectiles
+        @drawProjectile(projectile)
       @drawStatusBar()
 
     setLimits: (limits) =>
@@ -68,11 +68,11 @@ define ->
         .restoreCanvas()
         .restoreCanvas()
 
-    drawShot: (shot) ->
+    drawProjectile: (projectile) ->
       @canvas.drawArc
         fillStyle: '#ff0'
-        x: shot.position.x
-        y: shot.position.y
+        x: projectile.position.x
+        y: projectile.position.y
         radius: 2
 
     drawStatusBar: ->

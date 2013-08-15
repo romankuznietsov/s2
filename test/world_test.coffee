@@ -18,8 +18,8 @@ describe 'World', ->
     data = world.serialize()
     data.should.have.property 'players'
     data.players.should.be.instanceof Array
-    data.should.have.property 'shots'
-    data.shots.should.be.instanceof Array
+    data.should.have.property 'projectiles'
+    data.projectiles.should.be.instanceof Array
 
   it 'should add a player', ->
     {status, id} = world.addPlayer()
@@ -34,12 +34,12 @@ describe 'World', ->
     color.should.exist
     world.serialize().players.should.not.be.empty
 
-  it 'should update player and list shots', ->
+  it 'should update player and list projectiles', ->
     world.setPlayersKeys(player_id, up: true, left: true, fire: true)
     world.update()
     data = world.serialize()
     data.players[0].direction.should.not.equal 0
-    data.shots.should.not.be.empty
+    data.projectiles.should.not.be.empty
 
   it 'should remove player', ->
     world.removePlayer(player_id)

@@ -14,7 +14,7 @@ class World
     @players = {}
     @pendingPlayers = {}
     @lastPlayerId = 0
-    @shots = []
+    @projectiles = []
     setInterval(@update, @updatePeriod)
 
   addPlayer: ->
@@ -40,14 +40,14 @@ class World
   update: =>
     for _, player of @players
       player.update()
-      @shots = @shots.concat(player.getShots())
+      @projectiles = @projectiles.concat(player.getProjectiles())
 
-    for shot in @shots
-      shot.update()
+    for projectile in @projectiles
+      projectile.update()
       for _, player of @players
-        break if player.checkHit(shot)
+        break if player.checkHit(projectile)
 
-    @shots = @shots.filter((shot)->shot.alive())
+    @projectiles = @projectiles.filter((projectile)->projectile.alive())
 
   ships: ->
     ships
@@ -65,5 +65,5 @@ class World
     players = []
     for id, player of @players
       players.push player.serialize()
-    shots = @shots.map (shot) -> shot.serialize()
-    return {players: players, shots: shots}
+    projectiles = @projectiles.map (projectile) -> projectile.serialize()
+    return {players: players, projectiles: projectiles}

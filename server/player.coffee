@@ -1,4 +1,5 @@
-{Shot} = require './shot'
+{Weapon} = require './weapon'
+{Projectile} = require './projectile'
 
 distance = (p1, p2) ->
   Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -13,7 +14,8 @@ class Player
   constructor: (params) ->
     {ship, @limits, @color} = params
     for key, value of ship
-      @[key] = value
+      @[key] = value unless key == 'weapon'
+    @weapon = new Weapon(params.ship.weapon)
     @respawn()
 
   setKeys: (keys) ->
@@ -34,7 +36,7 @@ class Player
     @turnRight() if @keys.right
     @updateMovementDirection()
     @move()
-    @cooldown -= 1 if @cooldown > 0
+    @weapon.update()
 
   move: ->
     @position.x += Math.cos(@movementDirection) * @speed
@@ -54,7 +56,6 @@ class Player
 
   respawn: ->
     @health = @maxHealth
-    @cooldown = 0
     @speed = 0
     @direction = 0
     @movementDirection = 0
@@ -78,28 +79,23 @@ class Player
     @direction += @turnSpeed
     @direction -= twoPi if @direction >= twoPi
 
-  getShots: ->
-    if @cooldown is 0 && @keys.fire
-      @cooldown = @shotCooldown
-      shot = new Shot
-        position:
-          x: @position.x + Math.cos(@direction) * @radius
-          y: @position.y + Math.sin(@direction) * @radius
-        direction: @direction
-        limits: @limits
-        shooter: @
-      [shot]
+  getProjectiles: ->
+    if @keys.fire
+      position =
+        x: @position.x + Math.cos(@direction) * @radius
+        y: @position.y + Math.sin(@direction) * @radius
+      @weapon.shoot(@direction, shooter: @, limits: @limits, position: position)
     else
       []
 
-  checkHit: (shot) ->
-    if distance(shot.position, @position) < @radius
-      @health -= shot.damage
-      shot.destroy()
+  checkHit: (projectile) ->
+    if distance(projectile.position, @position) < @radius
+      @health -= projectile.damage
+      projectile.destroy()
       if @health <= 0
         @respawn()
-        if shot.shooter isnt @
-          shot.shooter.frag()
+        if projectile.shooter isnt @
+          projectile.shooter.frag()
         else
           @autoFrag()
       return true
