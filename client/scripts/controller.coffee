@@ -19,6 +19,9 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
       list.delegate 'a', 'touchend', (e) =>
         @socket.emit 'selectShip', e.target.innerHTML
         false
+      list.delegate 'a', 'click', (e) =>
+        @socket.emit 'selectShip', e.target.innerHTML
+        false
 
     setIndicatorColor: (color) ->
       $('.color-indicator').css('background-color', color || 'transparent')

@@ -1,9 +1,6 @@
 key-color = #08f
 fire-key-color = #f44
 
-#controller
-  display: none
-
 #ship-select
   text-align center
   color key-color
@@ -24,6 +21,9 @@ fire-key-color = #f44
 body
   background black
 
+#controller
+  display: none
+
 .info
   position fixed
   top 0
@@ -38,9 +38,7 @@ body
 
 .key
   font-family sans-serif
-  text-align center
   border-radius 30px
-  font-size 36px
   position absolute
   background black
   background-position center
@@ -48,11 +46,17 @@ body
   background-size 50%
   box-sizing border-box
   -moz-box-sizing border-box
+  border-width 3px
+  border-style solid
+  box-shadow 0 0 10px
 
 .key.active
   background-color #444
 
-.direction-keys
+.key-group
+  position fixed
+
+.left-key-group
   position fixed
   bottom 10px
   left 10px
@@ -61,10 +65,22 @@ body
   max-height 160px
   max-width 240px
 
+.right-key-group
+  position fixed
+  bottom 10px
+  right 10px
+  height 85%
+  width 30%
+  max-height 240px
+  max-width 240px
+
+.up-key, .down-key, .left-key, .right-key, .left-key, .right-key
+  color key-color
+  border-color key-color
+
 .left-key, .right-key
   height 100%
   width 45%
-  border 3px solid key-color
 
 .left-key
   left 0
@@ -74,30 +90,13 @@ body
   right 0
   background-image url('/right.png')
 
-.fire-and-speed-keys
-  position fixed
-  bottom 10px
-  right 10px
-  height 85%
-  width 30%
-  max-height 240px
-  max-width 240px
-
-.up-key, .down-key, .left-key, .right-key
-  border 3px solid key-color
-  color key-color
-  text-shadow 0 0 10px key-color
-  box-shadow 0 0 10px key-color
-
 .fire-key
   bottom 0
   left 0
   right 0
   height 55%
-  border 3px solid fire-key-color
   color fire-key-color
-  text-shadow 0 0 10px fire-key-color
-  box-shadow 0 0 10px fire-key-color
+  border-color fire-key-color
   background-image url('/fire.png')
 
 .up-key
