@@ -3,6 +3,10 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
     sendInterval: 32
     constructor: ->
       @gamepad = new Gamepad
+      @menu = $('#menu')
+      @controller = $('#controller')
+      @shipList = $('#menu .ship-list')
+      @setInfoText('Connecting')
       @connect()
 
     connect: ->
@@ -13,36 +17,43 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
       @socket.on 'disconnect', @disconnect
 
     showShips: (ships) =>
-      list = $('#ship-select')
+      @setInfoText('Select a ship')
       for name, props of ships
-        $('<a href="">').html(name).appendTo(list)
-      list.delegate 'a', 'touchend', (e) =>
+        $('<a>').attr('href', '').html(name).addClass('ship').appendTo(@shipList)
+      @shipList.delegate 'a.ship', 'touchend click', (e) =>
         @socket.emit 'selectShip', e.target.innerHTML
         false
-      list.delegate 'a', 'click', (e) =>
-        @socket.emit 'selectShip', e.target.innerHTML
-        false
+
+    clearShips: ->
+      @shipList.empty()
 
     setIndicatorColor: (color) ->
       $('.color-indicator').css('background-color', color || 'transparent')
 
     setInfoText: (text) ->
-      $('.info').html(text || '')
+      $('.info-line').html(text || '')
 
     join: (color) =>
-      $('#ship-select').hide()
-      $('#controller').show()
+      @switchToController()
       @keySending = setInterval(@sendKeys, @sendInterval)
-      @setInfoText()
       @setIndicatorColor(color)
 
     disconnect: =>
-      @setIndicatorColor()
-      @setInfoText('Disconnected')
       @keySending && clearInterval(@keySending)
+      @clearShips()
+      @switchToMenu()
+      @setInfoText('Disconnected')
 
     sendKeys: =>
       @socket.emit 'keys', @gamepad.keys
+
+    switchToController: ->
+      @menu.hide()
+      @controller.show()
+
+    switchToMenu: ->
+      @controller.hide()
+      @menu.show()
 
   $ ->
     new Controller
