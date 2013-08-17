@@ -44,7 +44,7 @@ define ->
           translateX: player.position.x
           translateY: player.position.y
         .drawArc
-          strokeStyle: "rgba(0, 160, 255, #{player.health})"
+          strokeStyle: "rgba(0, 160, 255, #{player.health.toFixed(2)})"
           strokeWidth: 1
           radius: player.radius
           x: 0, y: 0
