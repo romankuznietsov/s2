@@ -30,7 +30,7 @@ describe 'World', ->
     world.serialize().players.should.be.empty
 
   it 'should list a player if he has joined and return his color', ->
-    color = world.join(player_id, 'light')
+    color = world.join(player_id, 'Light Fighter')
     color.should.exist
     world.serialize().players.should.not.be.empty
 

@@ -4,7 +4,7 @@ require('chai').should()
 ships = require '../server/ships'
 
 describe 'Player', ->
-  ship = ships['light']
+  ship = ships['Light Fighter']
 
   player = new Player
     limits:

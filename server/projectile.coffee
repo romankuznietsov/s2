@@ -1,7 +1,8 @@
 exports.Projectile =
 class Projectile
   constructor: (params, shooterParams, direction) ->
-    {speed, @damage, @life} = params
+    {speed, range, @damage} = params
+    @life = range / speed
     {@shooter, @position, @limits} = shooterParams
     @speedVector =
       x: Math.cos(direction) * speed

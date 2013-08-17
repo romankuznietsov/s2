@@ -4,7 +4,7 @@ require('chai').should()
 describe 'Projectile', ->
   shooter = {foo: 'bar'}
   projectile = new Projectile(
-    { speed: 5, damage: 1, life: 100 },
+    { speed: 5, damage: 1, range: 100 },
     {
       position:
         x: 0, y: 0

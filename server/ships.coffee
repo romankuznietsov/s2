@@ -1,8 +1,12 @@
 projectiles =
   blast:
+    range: 750
     speed: 5
     damage: 1
-    life: 400
+  bullet:
+    range: 500
+    speed: 10
+    damage: 0.3
 
 weapons =
   'Light Blaster':
@@ -23,8 +27,14 @@ weapons =
     projectilesPerShot: 1
     cooldown: 20
 
+  'Machine Gun':
+    projectile: projectiles.bullet
+    spread: 0.03
+    projectilesPerShot: 1
+    cooldown: 10
+
 ships =
-  light:
+  'Light Fighter':
     weapon: weapons['Light Blaster']
     acceleration: 0.03
     topSpeed: 3
@@ -33,7 +43,16 @@ ships =
     maxHealth: 2
     radius: 10
 
-  medium:
+  'Firefly':
+    weapon: weapons['Machine Gun']
+    acceleration: 0.025
+    topSpeed: 2.5
+    turnSpeed: 0.025
+    inertia: 25
+    maxHealth: 2.5
+    radius: 12
+
+  'Medium Fighter':
     weapon: weapons['Medium Blaster']
     acceleration: 0.02
     topSpeed: 2
@@ -42,7 +61,7 @@ ships =
     maxHealth: 3
     radius: 14
 
-  heavy:
+  'Heavy Fighter':
     weapon: weapons['Heavy Blaster']
     acceleration: 0.01
     topSpeed: 1.8
