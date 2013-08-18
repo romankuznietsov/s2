@@ -6,8 +6,8 @@ class Weapon
     {@cooldown, @projectile, @spread, @projectilesPerShot} = params
     @cooldownLeft = 0
 
-  update: ->
-    @cooldownLeft -= 1
+  update: (dt) ->
+    @cooldownLeft -= dt
     @cooldownLeft = 0 if @cooldownLeft < 0
 
   shoot: (direction, shooterParams) ->

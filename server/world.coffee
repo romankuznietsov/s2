@@ -15,7 +15,8 @@ class World
     @pendingPlayers = {}
     @lastPlayerId = 0
     @projectiles = []
-    setInterval(@update, @updatePeriod)
+    dt = @updatePeriod / 1000
+    setInterval ( => @update(dt) ), @updatePeriod
 
   addPlayer: ->
     return {status: 'rejected'} if @playerLimitReached()
@@ -37,13 +38,13 @@ class World
   playerLimitReached: ->
     @colors.length == 0
 
-  update: =>
+  update: (dt) ->
     for _, player of @players
-      player.update()
+      player.update(dt)
       @projectiles = @projectiles.concat(player.getProjectiles())
 
     for projectile in @projectiles
-      projectile.update()
+      projectile.update(dt)
       for _, player of @players
         break if player.checkHit(projectile)
 

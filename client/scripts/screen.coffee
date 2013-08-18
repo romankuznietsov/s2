@@ -79,8 +79,8 @@ define ->
         strokeWidth: 1
         x1: projectile.position.x
         y1: projectile.position.y
-        x2: projectile.position.x + projectile.speedVector.x
-        y2: projectile.position.y + projectile.speedVector.y
+        x2: projectile.position.x + projectile.speedVector.x / 100
+        y2: projectile.position.y + projectile.speedVector.y / 100
 
     drawBlast: (projectile) ->
       @canvas.drawArc

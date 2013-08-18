@@ -16,16 +16,16 @@ class Projectile
   alive: ->
     @life > 0
 
-  update: ->
-    @life -= 1
-    @move()
+  update: (dt) ->
+    @life -= dt
+    @move(dt)
 
   destroy: ->
     @life = 0
 
-  move: ->
-    @position.x += @speedVector.x
-    @position.y += @speedVector.y
+  move: (dt) ->
+    @position.x += @speedVector.x * dt
+    @position.y += @speedVector.y * dt
     @position.x -= @limits.width if @position.x > @limits.width
     @position.y -= @limits.height if @position.y > @limits.height
     @position.x += @limits.width if @position.x < 0

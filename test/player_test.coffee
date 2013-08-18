@@ -34,7 +34,7 @@ describe 'Player', ->
   it 'should move if keys are pressed', ->
     before = player.serialize()
     player.setKeys up: true, left: true
-    player.update()
+    player.update(1)
     before.should.not.equal player.serialize()
 
   it 'should shoot', ->

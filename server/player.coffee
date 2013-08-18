@@ -29,28 +29,28 @@ class Player
     color: @color
     score: @score
 
-  update: =>
-    @accelerate() if @keys.up
-    @brake() if @keys.down
-    @turnLeft() if @keys.left
-    @turnRight() if @keys.right
-    @updateMovementDirection()
-    @move()
-    @weapon.update()
+  update: (dt) =>
+    @accelerate(dt) if @keys.up
+    @brake(dt) if @keys.down
+    @turnLeft(dt) if @keys.left
+    @turnRight(dt) if @keys.right
+    @updateMovementDirection(dt)
+    @move(dt)
+    @weapon.update(dt)
 
-  move: ->
-    @position.x += Math.cos(@movementDirection) * @speed
-    @position.y += Math.sin(@movementDirection) * @speed
+  move: (dt) ->
+    @position.x += Math.cos(@movementDirection) * @speed * dt
+    @position.y += Math.sin(@movementDirection) * @speed * dt
     @position.x -= @limits.width if @position.x > @limits.width
     @position.y -= @limits.height if @position.y > @limits.height
     @position.x += @limits.width if @position.x < 0
     @position.y += @limits.height if @position.y < 0
 
-  updateMovementDirection: ->
+  updateMovementDirection: (dt) ->
     diff = @direction - @movementDirection
     diff -= twoPi if diff > pi
     diff += twoPi if diff < -pi
-    @movementDirection += diff / @inertia
+    @movementDirection += diff * dt / @inertia
     @movementDirection += twoPi if @movementDirection < 0
     @movementDirection -= twoPi if @movementDirection >= twoPi
 
@@ -63,20 +63,20 @@ class Player
       x: @limits.width * Math.random()
       y: @limits.height * Math.random()
 
-  accelerate: ->
-    @speed += @acceleration
+  accelerate: (dt) ->
+    @speed += @acceleration * dt
     @speed = @topSpeed if @speed > @topSpeed
 
-  brake: ->
-    @speed -= @acceleration
+  brake: (dt) ->
+    @speed -= @acceleration * dt
     @speed = 0 if @speed < 0
 
-  turnLeft: ->
-    @direction -= @turnSpeed
+  turnLeft: (dt) ->
+    @direction -= @turnSpeed * dt
     @direction += twoPi if @direction < 0
 
-  turnRight: ->
-    @direction += @turnSpeed
+  turnRight: (dt) ->
+    @direction += @turnSpeed * dt
     @direction -= twoPi if @direction >= twoPi
 
   getProjectiles: ->

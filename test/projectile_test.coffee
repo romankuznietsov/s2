@@ -19,7 +19,7 @@ describe 'Projectile', ->
     data.should.have.property 'position'
 
   it 'should update life and position', ->
-    projectile.update()
+    projectile.update(1)
     state = projectile.serialize()
     state.position.x.should.be.greaterThan 0
     state.position.y.should.equal 0

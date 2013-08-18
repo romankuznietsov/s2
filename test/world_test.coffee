@@ -36,7 +36,7 @@ describe 'World', ->
 
   it 'should update player and list projectiles', ->
     world.setPlayersKeys(player_id, up: true, left: true, fire: true)
-    world.update()
+    world.update(1)
     data = world.serialize()
     data.players[0].direction.should.not.equal 0
     data.projectiles.should.not.be.empty
