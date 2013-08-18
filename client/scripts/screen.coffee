@@ -69,6 +69,20 @@ define ->
         .restoreCanvas()
 
     drawProjectile: (projectile) ->
+      switch projectile.type
+        when 'blast' then @drawBlast(projectile)
+        when 'bullet' then @drawBullet(projectile)
+
+    drawBullet: (projectile) ->
+      @canvas.drawLine
+        strokeStyle: '#ff0'
+        strokeWidth: 1
+        x1: projectile.position.x
+        y1: projectile.position.y
+        x2: projectile.position.x + projectile.speedVector.x
+        y2: projectile.position.y + projectile.speedVector.y
+
+    drawBlast: (projectile) ->
       @canvas.drawArc
         fillStyle: '#ff0'
         x: projectile.position.x

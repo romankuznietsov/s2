@@ -1,26 +1,27 @@
 exports.Projectile =
 class Projectile
   constructor: (params, shooterParams, direction) ->
-    {speed, range, @damage} = params
+    {speed, range, @damage, @type} = params
     @life = range / speed
     {@shooter, @position, @limits} = shooterParams
     @speedVector =
       x: Math.cos(direction) * speed
       y: Math.sin(direction) * speed
-    @lifeLeft = @life
 
   serialize: ->
     position: @position
+    type: @type
+    speedVector: @speedVector
 
   alive: ->
-    @lifeLeft > 0
+    @life > 0
 
   update: ->
-    @lifeLeft -= 1
+    @life -= 1
     @move()
 
   destroy: ->
-    @lifeLeft = 0
+    @life = 0
 
   move: ->
     @position.x += @speedVector.x

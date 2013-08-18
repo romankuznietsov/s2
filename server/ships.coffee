@@ -1,9 +1,12 @@
 projectiles =
   blast:
+    type: 'blast'
     range: 750
     speed: 5
     damage: 1
+
   bullet:
+    type: 'bullet'
     range: 500
     speed: 10
     damage: 0.3
