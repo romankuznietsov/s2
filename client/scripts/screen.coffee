@@ -1,4 +1,4 @@
-define ->
+define ['world'], (World) ->
   class Screen
     canvasSelector: '#canvas'
     redrawPeriod: 32
@@ -9,22 +9,21 @@ define ->
       itemWidth: 80
       padding: 30
       y: 0
-    players: []
-    projectiles: []
 
     constructor: ->
       @canvas = $(@canvasSelector)
       $(window).resize @fitCanvas
       setInterval(@redraw, @redrawPeriod)
+      @world = new World
 
     update: (data) =>
-      {@players, @projectiles} = data
+      @world.update(data)
 
     redraw: =>
       @canvas.clearCanvas fillStyle: 'black'
-      for player in @players
+      for player in @world.players
         @drawPlayer(player)
-      for projectile in @projectiles
+      for projectile in @world.projectiles
         @drawProjectile(projectile)
       @drawStatusBar()
 
@@ -107,12 +106,12 @@ define ->
         translateX: @statusBar.padding
         translateY: @statusBar.y + @statusBar.height / 2
 
-      for i in [ 0...@players.length ]
+      for i in [ 0...@world.players.length ]
         @canvas.drawArc
           x: @statusBar.itemWidth * i
           y: 0
           radius: @statusBar.iconRadius
-          fillStyle: @players[i].color
+          fillStyle: @world.players[i].color
         @canvas.drawText
           strokeStyle: 'white'
           fillStyle: 'white'
@@ -120,7 +119,7 @@ define ->
           y: 0
           fontSize: @statusBar.fontSize
           fontFamily: 'sans-serif'
-          text: @players[i].score
+          text: @world.players[i].score
 
       @canvas.restoreCanvas()
 

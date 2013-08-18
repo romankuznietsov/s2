@@ -1,4 +1,5 @@
 require ['screen', '../socket.io-client/dist/socket.io.min'], (Screen, SocketIo) ->
+
   class ScreenClient
     redrawPeriod: 32
     statusBarHeight: 30
