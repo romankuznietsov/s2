@@ -1,4 +1,4 @@
-define ['world'], (World) ->
+define ['world', 'projectile_view', 'player_view'], (World, projectileView, playerView) ->
   class Screen
     canvasSelector: '#canvas'
     redrawPeriod: 32
@@ -22,9 +22,9 @@ define ['world'], (World) ->
     redraw: =>
       @canvas.clearCanvas fillStyle: 'black'
       for player in @world.players
-        @drawPlayer(player)
+        playerView(@canvas, player)
       for projectile in @world.projectiles
-        @drawProjectile(projectile)
+        projectileView(@canvas, projectile)
       @drawStatusBar()
 
     setLimits: (limits) =>
@@ -36,62 +36,6 @@ define ['world'], (World) ->
       @canvas.attr 'width', @width
       @canvas.attr 'height', @height
       @fitCanvas()
-
-    drawPlayer: (player) ->
-      shieldColor = if player.invincible
-        "rgb(255, 255, 0)"
-      else
-        "rgba(0, 160, 255, #{player.health.toFixed(2)})"
-
-      @canvas
-        .translateCanvas
-          translateX: player.position.x
-          translateY: player.position.y
-        .drawArc
-          strokeStyle: shieldColor
-          strokeWidth: 1
-          radius: player.radius
-          x: 0, y: 0
-        .scaleCanvas
-          x: 0, y: 0
-          scaleX: player.radius
-          scaleY: player.radius
-        .drawLine
-          rotate: player.direction
-          fillStyle: player.color
-          closed: true
-          rounded: true
-          x1: 0.9
-          y1: 0
-          x2: -0.7
-          y2: 0.6
-          x3: 0
-          y3: 0
-          x4: -0.7
-          y4: -0.6
-        .restoreCanvas()
-        .restoreCanvas()
-
-    drawProjectile: (projectile) ->
-      switch projectile.type
-        when 'blast' then @drawBlast(projectile)
-        when 'bullet' then @drawBullet(projectile)
-
-    drawBullet: (projectile) ->
-      @canvas.drawLine
-        strokeStyle: '#ff0'
-        strokeWidth: 1
-        x1: projectile.position.x
-        y1: projectile.position.y
-        x2: projectile.position.x + projectile.speedVector.x / 100
-        y2: projectile.position.y + projectile.speedVector.y / 100
-
-    drawBlast: (projectile) ->
-      @canvas.drawArc
-        fillStyle: '#ff0'
-        x: projectile.position.x
-        y: projectile.position.y
-        radius: 2
 
     drawStatusBar: ->
       @canvas.drawRect
