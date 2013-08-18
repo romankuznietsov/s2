@@ -39,12 +39,17 @@ define ->
       @fitCanvas()
 
     drawPlayer: (player) ->
+      shieldColor = if player.invincible
+        "rgb(255, 255, 0)"
+      else
+        "rgba(0, 160, 255, #{player.health.toFixed(2)})"
+
       @canvas
         .translateCanvas
           translateX: player.position.x
           translateY: player.position.y
         .drawArc
-          strokeStyle: "rgba(0, 160, 255, #{player.health.toFixed(2)})"
+          strokeStyle: shieldColor
           strokeWidth: 1
           radius: player.radius
           x: 0, y: 0

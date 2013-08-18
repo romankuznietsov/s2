@@ -10,6 +10,8 @@ exports.Player =
 class Player
   score: 0
   keys: {}
+  invincibleTime: 3
+  invincibleTimeLeft: 0
 
   constructor: (params) ->
     {ship, @limits, @color} = params
@@ -28,6 +30,7 @@ class Player
     health: @health / @maxHealth
     color: @color
     score: @score
+    invincible: @invincible()
 
   update: (dt) =>
     @accelerate(dt) if @keys.up
@@ -37,6 +40,7 @@ class Player
     @updateMovementDirection(dt)
     @move(dt)
     @weapon.update(dt)
+    @invincibleTimeLeft -= dt if @invincible()
 
   move: (dt) ->
     @position.x += Math.cos(@movementDirection) * @speed * dt
@@ -55,6 +59,7 @@ class Player
     @movementDirection -= twoPi if @movementDirection >= twoPi
 
   respawn: ->
+    @invincibleTimeLeft = @invincibleTime
     @health = @maxHealth
     @speed = 0
     @direction = 0
@@ -90,14 +95,15 @@ class Player
 
   checkHit: (projectile) ->
     if distance(projectile.position, @position) < @radius
-      @health -= projectile.damage
       projectile.destroy()
-      if @health <= 0
-        @respawn()
-        if projectile.shooter isnt @
-          projectile.shooter.frag()
-        else
-          @autoFrag()
+      unless @invincible()
+        @health -= projectile.damage
+        if @health <= 0
+          @respawn()
+          if projectile.shooter isnt @
+            projectile.shooter.frag()
+          else
+            @autoFrag()
       return true
     else
       return false
@@ -107,3 +113,6 @@ class Player
 
   autoFrag: ->
     @score -= 1
+
+  invincible: ->
+    @invincibleTimeLeft > 0

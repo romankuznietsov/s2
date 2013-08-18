@@ -34,7 +34,7 @@ describe 'Player', ->
   it 'should move if keys are pressed', ->
     before = player.serialize()
     player.setKeys up: true, left: true
-    player.update(1)
+    player.update(10)
     before.should.not.equal player.serialize()
 
   it 'should shoot', ->
@@ -54,10 +54,16 @@ describe 'Player', ->
     player.checkHit(projectile).should.equal true
     player.serialize().health.should.be.equal 1
 
+  it 'should be invincible after respawn', ->
+    projectile = createProjectile(shooter: otherPlayer, target: player)
+    player.checkHit(projectile).should.equal true
+    player.serialize().health.should.be.equal 1
+
   it 'should increase score', ->
     otherPlayer.serialize().score.should.equal 1
 
   it 'should decrease score on autokill', ->
+    player.update(10)
     player.checkHit(createProjectile(shooter: player, target: player))
     player.checkHit(createProjectile(shooter: player, target: player))
     player.serialize().score.should.equal -1
