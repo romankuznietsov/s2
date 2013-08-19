@@ -7,7 +7,9 @@ class Server
   constructor: (port) ->
     @socketIo = require('socket.io').listen(port)
     @screens = {}
+    @controllers = {}
     @lastScreenId = 0
+    @lastControllerId = 0
     @world = new World
       limits:
         width: 1200, height: 800
@@ -38,17 +40,26 @@ class Server
 
   controller: (socket) ->
     {status, id} = @world.addPlayer()
+    controllerId = @lastControllerId
+    @lastControllerId += 1
+
+    update = =>
+      socket.emit 'update', @world.stats(id)
 
     if status is 'connected'
       socket.on 'selectShip', (ship) =>
         color = @world.join(id, ship)
         socket.emit 'join', color
+        @controllers[controllerId] = setInterval(update, @updateInterval)
 
       socket.on 'keys', (keys) =>
         @world.setPlayersKeys(id, keys)
 
       socket.on 'disconnect', =>
         @world.removePlayer(id)
+        @controllers[controllerId] &&
+          clearInterval(@controllers[controllerId])
+        delete @controllers[controllerId]
 
       socket.emit 'ships', @world.ships()
 

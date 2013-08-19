@@ -32,6 +32,10 @@ class Player
     score: @score
     invincible: @invincible()
 
+  stats: ->
+    health: @health / @maxHealth * 100
+    score: @score
+
   update: (dt) =>
     @accelerate(dt) if @keys.up
     @brake(dt) if @keys.down

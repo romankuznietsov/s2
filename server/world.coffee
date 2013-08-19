@@ -68,3 +68,6 @@ class World
       players.push player.serialize()
     projectiles = @projectiles.map (projectile) -> projectile.serialize()
     return {players: players, projectiles: projectiles}
+
+  stats: (id) ->
+    @players[id].stats()

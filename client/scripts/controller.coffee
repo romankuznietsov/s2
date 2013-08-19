@@ -6,6 +6,7 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
       @menu = $('#menu')
       @controller = $('#controller')
       @shipList = $('#menu .ship-list')
+      @hud = $('.hud')
       @setInfoText('Connecting')
       @connect()
 
@@ -15,6 +16,7 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
       @socket.on 'ships', @showShips
       @socket.on 'join', @join
       @socket.on 'disconnect', @disconnect
+      @socket.on 'update', @update
 
     showShips: (ships) =>
       @setInfoText('Select a ship')
@@ -46,6 +48,9 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
 
     sendKeys: =>
       @socket.emit 'keys', @gamepad.keys
+
+    update: (stats) =>
+      @hud.html "Shield: #{stats.health.toFixed(0)}%<br/>Frags: #{stats.score}"
 
     switchToController: ->
       @menu.hide()
