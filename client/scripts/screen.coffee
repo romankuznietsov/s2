@@ -1,4 +1,4 @@
-define ['world', 'projectile_view', 'player_view'], (World, projectileView, playerView) ->
+define ['projectile_view', 'player_view'], (projectileView, playerView) ->
   class Screen
     canvasSelector: '#canvas'
     redrawPeriod: 32
@@ -14,16 +14,15 @@ define ['world', 'projectile_view', 'player_view'], (World, projectileView, play
       @canvas = $(@canvasSelector)
       $(window).resize @fitCanvas
       setInterval(@redraw, @redrawPeriod)
-      @world = new World
 
     update: (data) =>
-      @world.update(data)
+      {@players, @projectiles} = data
 
     redraw: =>
       @canvas.clearCanvas fillStyle: 'black'
-      for player in @world.players
+      for player in @players
         playerView(@canvas, player)
-      for projectile in @world.projectiles
+      for projectile in @projectiles
         projectileView(@canvas, projectile)
       @drawStatusBar()
 
@@ -50,12 +49,12 @@ define ['world', 'projectile_view', 'player_view'], (World, projectileView, play
         translateX: @statusBar.padding
         translateY: @statusBar.y + @statusBar.height / 2
 
-      for i in [ 0...@world.players.length ]
+      for i in [ 0...@players.length ]
         @canvas.drawArc
           x: @statusBar.itemWidth * i
           y: 0
           radius: @statusBar.iconRadius
-          fillStyle: @world.players[i].color
+          fillStyle: @players[i].color
         @canvas.drawText
           strokeStyle: 'white'
           fillStyle: 'white'
@@ -63,7 +62,7 @@ define ['world', 'projectile_view', 'player_view'], (World, projectileView, play
           y: 0
           fontSize: @statusBar.fontSize
           fontFamily: 'sans-serif'
-          text: @world.players[i].score
+          text: @players[i].score
 
       @canvas.restoreCanvas()
 
