@@ -38,7 +38,7 @@ require ['gamepad', '../socket.io-client/dist/socket.io.min'], (Gamepad, SocketI
     join: (color) =>
       @switchToController()
       @keySending = setInterval(@sendKeys, @sendInterval)
-      @setIndicatorColor(color)
+      @setIndicatorColor(color.value)
 
     disconnect: =>
       @keySending && clearInterval(@keySending)

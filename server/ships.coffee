@@ -38,39 +38,42 @@ weapons =
 
 ships =
   'Light Fighter':
+    type: 'light'
     weapon: weapons['Light Blaster']
     acceleration: 300
     topSpeed: 300
     turnSpeed: 3.5
     inertia: 0.20
     maxHealth: 2
-    radius: 10
+    radius: 20
 
-  'Firefly':
-    weapon: weapons['Machine Gun']
-    acceleration: 250
-    topSpeed: 250
-    turnSpeed: 2.5
-    inertia: 0.25
-    maxHealth: 2.5
-    radius: 12
+  # 'Firefly':
+  #   weapon: weapons['Machine Gun']
+  #   acceleration: 250
+  #   topSpeed: 250
+  #   turnSpeed: 2.5
+  #   inertia: 0.25
+  #   maxHealth: 2.5
+  #   radius: 12
 
   'Medium Fighter':
+    type: 'mid'
     weapon: weapons['Medium Blaster']
     acceleration: 200
     topSpeed: 200
     turnSpeed: 1.7
     inertia: 0.35
     maxHealth: 3
-    radius: 14
+    radius: 25
 
   'Heavy Fighter':
+    type: 'heavy'
     weapon: weapons['Heavy Blaster']
     acceleration: 100
     topSpeed: 180
     turnSpeed: 1.4
     inertia: 0.45
     maxHealth: 5
-    radius: 18
+    radius: 30
 
 module.exports = ships

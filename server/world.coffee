@@ -1,12 +1,10 @@
 {Player} = require './player'
 ships = require './ships'
+colors = require './colors'
 
 exports.World =
 class World
-  colors: [
-    '#1ABC9C', '#2ECC71', '#3468DB', '#9B59B6',
-    '#F1C40F', '#E67E22', '#E74C3C', '#ECF0F1'
-  ]
+  colors: colors
   updatePeriod: 10
 
   constructor: (params) ->

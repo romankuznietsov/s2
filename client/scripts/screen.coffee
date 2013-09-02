@@ -1,5 +1,7 @@
 define ['projectile_view', 'player_view'], (projectileView, playerView) ->
   class Screen
+    players: []
+    projectiles: []
     canvasSelector: '#canvas'
     redrawPeriod: 32
     statusBar:
@@ -54,7 +56,7 @@ define ['projectile_view', 'player_view'], (projectileView, playerView) ->
           x: @statusBar.itemWidth * i
           y: 0
           radius: @statusBar.iconRadius
-          fillStyle: @players[i].color
+          fillStyle: @players[i].color.value
         @canvas.drawText
           strokeStyle: 'white'
           fillStyle: 'white'

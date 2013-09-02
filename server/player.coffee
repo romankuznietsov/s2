@@ -31,6 +31,7 @@ class Player
     color: @color
     score: @score
     invincible: @invincible()
+    type: @type
 
   stats: ->
     health: @health / @maxHealth * 100
