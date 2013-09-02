@@ -4,13 +4,13 @@ define ->
       @images = {}
 
     getModel: (type, color) ->
-      if @images[color]
-        @images[color]
-      else
-        @images[color] = new Image
-        console.log "ships/#{type}_#{color}.png"
-        @images[color].src = "ships/#{type}_#{color}.png"
-        @images[color]
+      imageName = "ships/#{type}_#{color}.png"
+
+      if @images[imageName] is undefined
+        @images[imageName] = new Image
+        @images[imageName].src = imageName
+
+      @image[imageName]
 
   shipModelStore = new ShipModelStore
 
