@@ -10,7 +10,7 @@ define ->
         @images[imageName] = new Image
         @images[imageName].src = imageName
 
-      @image[imageName]
+      @images[imageName]
 
   shipModelStore = new ShipModelStore
 
